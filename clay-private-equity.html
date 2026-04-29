@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Selling Clay to Private Equity · Adam Genn</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #f5f2eb; --bg2: #ffffff; --bg3: #ede9df;
+      --border: rgba(21,21,21,0.1); --border2: rgba(21,21,21,0.06);
+      --green: #135b45; --green-mid: #1a7a5e; --green-lt: #19a26c;
+      --text: #151515; --muted: #737373;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: 'Inter', system-ui, sans-serif;
+      line-height: 1.7; overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+    h1, h2, h3 { font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; letter-spacing: -0.01em; }
+    a { color: inherit; text-decoration: none; }
+    .fade-up { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: 60px; display: flex; align-items: center; justify-content: space-between;
+      padding: 0 3rem; background: rgba(245,242,235,0.9);
+      backdrop-filter: blur(12px); border-bottom: 1px solid var(--border2);
+    }
+    .nav-logo { font-family: 'Instrument Serif', Georgia, serif; font-size: 1.2rem; letter-spacing: -0.02em; }
+    .nav-back {
+      display: flex; align-items: center; gap: 0.4rem;
+      font-size: 0.82rem; font-weight: 500; color: var(--muted);
+      transition: color 0.2s;
+    }
+    .nav-back:hover { color: var(--text); }
+
+    .container { max-width: 860px; margin: 0 auto; padding: 0 3rem; }
+
+    .btn-primary {
+      display: inline-block; padding: 0.7rem 1.6rem;
+      background: var(--green); color: #fff; border-radius: 6px;
+      font-size: 0.88rem; font-weight: 600;
+      transition: background 0.2s, transform 0.15s;
+      margin-right: 0.5rem;
+    }
+    .btn-primary:hover { background: var(--green-mid); transform: translateY(-1px); }
+    .btn-outline {
+      display: inline-block; padding: 0.7rem 1.6rem;
+      border: 1px solid var(--border); color: var(--muted);
+      border-radius: 6px; font-size: 0.88rem; font-weight: 500;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-outline:hover { border-color: var(--text); color: var(--text); }
+
+    .page-hero { padding: 130px 0 70px; border-bottom: 1px solid var(--border2); }
+    .hero-eyebrow {
+      font-size: 0.75rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--green); margin-bottom: 1.25rem;
+    }
+    .page-hero h1 {
+      font-size: clamp(2.2rem, 4vw, 3.4rem);
+      line-height: 1.1; margin-bottom: 1.4rem;
+    }
+    .page-hero h1 em { color: var(--green); font-style: italic; }
+    .page-hero p {
+      font-size: 1.05rem; color: var(--muted);
+      max-width: 660px; line-height: 1.75; margin-bottom: 2.5rem;
+    }
+    .hero-meta {
+      display: flex; gap: 2.5rem; flex-wrap: wrap;
+      padding-top: 2rem; border-top: 1px solid var(--border2);
+    }
+    .meta-label {
+      font-size: 0.68rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--muted); margin-bottom: 0.25rem;
+    }
+    .meta-value { font-size: 0.88rem; font-weight: 600; color: var(--text); }
+
+    .content-section {
+      padding: 5rem 0; border-bottom: 1px solid var(--border2);
+    }
+    .content-section:last-of-type { border-bottom: none; }
+    .section-eyebrow {
+      font-size: 0.75rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--green); margin-bottom: 0.75rem;
+    }
+    .content-section h2 {
+      font-size: clamp(1.5rem, 2.5vw, 2.1rem);
+      margin-bottom: 1.25rem; color: var(--text); line-height: 1.2;
+    }
+    .content-section p {
+      color: var(--muted); font-size: 0.97rem;
+      line-height: 1.85; margin-bottom: 1rem;
+      max-width: 720px;
+    }
+    .content-section p strong { color: var(--text); font-weight: 600; }
+    .content-section p em { color: var(--text); font-style: italic; }
+
+    .pullquote {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-style: italic; font-size: 1.55rem; line-height: 1.4;
+      color: var(--green); border-left: 3px solid var(--green);
+      padding: 0.5rem 0 0.5rem 1.5rem;
+      margin: 2.5rem 0; max-width: 720px;
+      letter-spacing: -0.005em;
+    }
+
+    /* Disqualifier list */
+    .disqualifier-list {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: 0.85rem;
+      margin: 2rem 0;
+    }
+    .dq {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.1rem 1.25rem;
+    }
+    .dq-title {
+      font-size: 0.85rem; font-weight: 700;
+      color: var(--text); margin-bottom: 0.3rem;
+      letter-spacing: -0.005em;
+    }
+    .dq-body {
+      font-size: 0.78rem; color: var(--muted); line-height: 1.6;
+    }
+
+    /* Segment cards */
+    .segments-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1rem; margin: 2.5rem 0 1rem;
+    }
+    .seg-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.75rem;
+      display: flex; flex-direction: column;
+    }
+    .seg-count {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 2.6rem; line-height: 1;
+      color: var(--green); margin-bottom: 0.4rem;
+    }
+    .seg-name {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem; font-weight: 700;
+      color: var(--text); margin-bottom: 0.6rem;
+      letter-spacing: -0.01em;
+    }
+    .seg-desc {
+      font-size: 0.82rem; color: var(--muted);
+      line-height: 1.6; margin-bottom: 0.75rem;
+    }
+    .seg-tag {
+      margin-top: auto;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--border2);
+      font-size: 0.7rem; color: var(--green);
+      font-weight: 600; letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    /* Formula card row */
+    .formula-row {
+      display: grid; grid-template-columns: repeat(5, 1fr);
+      gap: 0.5rem; margin: 1.75rem 0 1rem;
+    }
+    .formula {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem 0.85rem;
+      text-align: center;
+    }
+    .formula-name {
+      font-family: 'JetBrains Mono', 'Courier New', monospace;
+      font-size: 0.72rem; font-weight: 700;
+      color: var(--green); margin-bottom: 0.4rem;
+      letter-spacing: 0.02em;
+    }
+    .formula-desc {
+      font-size: 0.7rem; color: var(--muted);
+      line-height: 1.4;
+    }
+
+    /* Funnel */
+    .funnel {
+      margin: 2rem 0;
+      max-width: 560px;
+    }
+    .funnel-row {
+      display: flex; align-items: center; gap: 1rem;
+      padding: 0.85rem 1.15rem;
+      border-radius: 10px;
+      background: var(--bg2);
+      border: 1px solid var(--border2);
+      margin-bottom: 0.45rem;
+    }
+    .funnel-num {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 1.5rem; line-height: 1;
+      color: var(--green); min-width: 60px;
+    }
+    .funnel-label {
+      font-size: 0.85rem; color: var(--text); font-weight: 500;
+      flex: 1;
+    }
+    .funnel-step {
+      font-size: 0.72rem; color: var(--muted);
+      font-style: italic;
+    }
+    .funnel-arrow {
+      text-align: center; font-size: 0.85rem; color: var(--muted);
+      margin: 0.1rem 0;
+    }
+
+    /* Stat row + chips reused */
+    .stat-row {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1rem; margin: 2rem 0;
+    }
+    .stat-card {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.5rem; text-align: center;
+    }
+    .stat-card-val {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 2rem; color: var(--green);
+      line-height: 1; margin-bottom: 0.3rem;
+    }
+    .stat-card-lbl { font-size: 0.78rem; color: var(--muted); }
+
+    .chip-row {
+      display: flex; flex-wrap: wrap; gap: 0.45rem;
+      margin-top: 1.5rem;
+    }
+    .chip {
+      padding: 0.28rem 0.75rem;
+      background: rgba(19,91,69,0.07);
+      border: 1px solid rgba(19,91,69,0.15);
+      border-radius: 100px;
+      font-size: 0.76rem; font-weight: 500;
+      color: var(--green);
+    }
+    .chip-dark {
+      background: rgba(21,21,21,0.05);
+      border-color: var(--border); color: var(--muted);
+    }
+
+    /* Diagrams */
+    .diagram {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.75rem 1.5rem 1.25rem;
+      margin: 2rem 0 1.5rem;
+      overflow-x: auto;
+    }
+    .diagram svg { width: 100%; height: auto; max-width: 760px; display: block; margin: 0 auto; }
+    .diagram-caption {
+      font-size: 0.78rem; color: var(--muted);
+      text-align: center; margin-top: 0.6rem;
+      font-style: italic;
+    }
+
+    .page-cta {
+      padding: 5rem 0; text-align: center;
+      background: var(--bg2);
+      border-top: 1px solid var(--border2);
+    }
+    .page-cta h2 {
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      margin-bottom: 1rem;
+    }
+    .page-cta h2 em { color: var(--green); font-style: italic; }
+    .page-cta p {
+      color: var(--muted); font-size: 1rem;
+      max-width: 480px; margin: 0 auto 2.5rem; line-height: 1.8;
+    }
+
+    footer {
+      padding: 1.5rem 3rem; border-top: 1px solid var(--border2);
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 0.78rem; color: var(--muted);
+    }
+
+    @media (max-width: 860px) {
+      .disqualifier-list { grid-template-columns: 1fr; }
+      .segments-grid { grid-template-columns: 1fr; }
+      .formula-row { grid-template-columns: repeat(2, 1fr); }
+      .stat-row { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 768px) {
+      .container { padding: 0 1.5rem; }
+      nav { padding: 0 1.5rem; }
+      footer { padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Adam Genn</div>
+  <a href="index.html#projects" class="nav-back">← Back to portfolio</a>
+</nav>
+
+<div class="page-hero">
+  <div class="container fade-up">
+    <div class="hero-eyebrow">GTM Engineering · Three-Week Build</div>
+    <h1>Selling Clay Into a<br><em>Vertical It Hasn't Touched.</em></h1>
+    <p>
+      Clay's existing PE story is portfolio-company GTM. Nobody has written the other chapter — Clay for the firms doing the buying. Same machine, different output. Three weeks of GTM engineering applied to that gap, end to end.
+    </p>
+    <div class="hero-meta">
+      <div>
+        <div class="meta-label">Target market</div>
+        <div class="meta-value">Private equity deal sourcing</div>
+      </div>
+      <div>
+        <div class="meta-label">Timeframe</div>
+        <div class="meta-value">Three weeks, end to end</div>
+      </div>
+      <div>
+        <div class="meta-label">Stack</div>
+        <div class="meta-value">Clay · Claygent · EDGAR API · Smartlead</div>
+      </div>
+      <div>
+        <div class="meta-label">Output</div>
+        <div class="meta-value">Segmented TAM, scored, deterministic email engine</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="content-section">
+  <div class="container fade-up">
+    <div class="section-eyebrow">The Positioning Bet</div>
+    <h2>Finance is running an outbound motion. It just calls it deal sourcing.</h2>
+    <p>
+      A deal-sourcing analyst at a middle-market PE firm runs the same machine as a BDR. Build a target universe. Enrich. Score by fit. Reach the right contact first. The output is different — a company to acquire, not a customer to close — but the motion is identical. Most analysts run that machine on PitchBook exports, Affinity, and manual research that should not be manual.
+    </p>
+
+    <div class="diagram">
+      <svg viewBox="0 0 720 320" xmlns="http://www.w3.org/2000/svg" font-family="Inter, system-ui, sans-serif">
+        <defs>
+          <marker id="arr1" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+            <path d="M0,0 L8,4 L0,8 Z" fill="#737373"/>
+          </marker>
+        </defs>
+
+        <rect x="20" y="20" width="320" height="44" rx="8" fill="#fff" stroke="rgba(21,21,21,0.1)"/>
+        <text x="180" y="40" text-anchor="middle" font-size="10" font-weight="700" fill="#737373" letter-spacing="0.1em">SAAS</text>
+        <text x="180" y="56" text-anchor="middle" font-size="14" font-weight="700" fill="#151515">BDR motion</text>
+
+        <rect x="380" y="20" width="320" height="44" rx="8" fill="rgba(19,91,69,0.06)" stroke="#135b45" stroke-width="1.5"/>
+        <text x="540" y="40" text-anchor="middle" font-size="10" font-weight="700" fill="#135b45" letter-spacing="0.1em">FINANCIAL SERVICES</text>
+        <text x="540" y="56" text-anchor="middle" font-size="14" font-weight="700" fill="#135b45">PE deal sourcing</text>
+
+        <g font-size="13" font-weight="500" fill="#151515">
+          <text x="180" y="100" text-anchor="middle">Build a target universe</text>
+          <text x="540" y="100" text-anchor="middle">Build a target universe</text>
+
+          <text x="180" y="142" text-anchor="middle">Enrich with data</text>
+          <text x="540" y="142" text-anchor="middle">Enrich with data</text>
+
+          <text x="180" y="184" text-anchor="middle">Score by fit</text>
+          <text x="540" y="184" text-anchor="middle">Score by fit</text>
+
+          <text x="180" y="226" text-anchor="middle">Reach the buyer first</text>
+          <text x="540" y="226" text-anchor="middle">Reach the founder first</text>
+        </g>
+
+        <line x1="360" y1="20" x2="360" y2="252" stroke="rgba(21,21,21,0.15)" stroke-dasharray="4,4"/>
+
+        <line x1="180" y1="246" x2="180" y2="270" stroke="#737373" stroke-width="1" marker-end="url(#arr1)"/>
+        <line x1="540" y1="246" x2="540" y2="270" stroke="#737373" stroke-width="1" marker-end="url(#arr1)"/>
+
+        <rect x="20" y="278" width="320" height="34" rx="8" fill="#fff" stroke="rgba(21,21,21,0.1)"/>
+        <text x="180" y="300" text-anchor="middle" font-size="13" font-weight="600" fill="#151515">Customer to close</text>
+
+        <rect x="380" y="278" width="320" height="34" rx="8" fill="#135b45"/>
+        <text x="540" y="300" text-anchor="middle" font-size="13" font-weight="600" fill="#fff">Company to acquire</text>
+      </svg>
+      <div class="diagram-caption">Same four steps. Different output. The tools haven't caught up.</div>
+    </div>
+
+    <div class="pullquote">
+      Proprietary deal flow is the entire game. Sourcing earlier than competitors is alpha — and it compounds.
+    </div>
+
+    <p>
+      Funds that win consistently aren't relying on partner networks. They're competing on infrastructure. The clearest organizational tell that a firm has made that bet is a dedicated <strong>Business Development or Originations</strong> hire — sourcing as a process, not a relationship game.
+    </p>
+  </div>
+</div>
+
+<div class="content-section">
+  <div class="container fade-up">
+    <div class="section-eyebrow">The Cut</div>
+    <h2>Seven disqualifiers, applied in order.</h2>
+    <p>
+      Financial services runs from JPMorgan down to a solo GP managing $50M. Most of it isn't a fit. <strong>The discipline of an ICP isn't who it includes — it's everything you delete on the way to the right list.</strong>
+    </p>
+
+    <div class="disqualifier-list">
+      <div class="dq">
+        <div class="dq-title">Too large to need it</div>
+        <div class="dq-body">Household-name firms win on reputation. Outbound sourcing matters most to firms still earning that position.</div>
+      </div>
+      <div class="dq">
+        <div class="dq-title">Publicly traded</div>
+        <div class="dq-body">Banks, asset managers, brokerages don't run outbound deal sourcing — or solved it internally years ago.</div>
+      </div>
+      <div class="dq">
+        <div class="dq-title">Wrong investment type</div>
+        <div class="dq-body">Hedge funds, mutual funds, wealth managers, family offices aren't hunting private companies to back.</div>
+      </div>
+      <div class="dq">
+        <div class="dq-title">No active fund</div>
+        <div class="dq-body">A firm in harvest mode is managing positions. Deployment pressure is what creates urgency.</div>
+      </div>
+      <div class="dq">
+        <div class="dq-title">No sourcing headcount</div>
+        <div class="dq-body">No dedicated BD or Originations role means the firm hasn't made the organizational bet on systematic sourcing.</div>
+      </div>
+      <div class="dq">
+        <div class="dq-title">Wrong sourcing motion</div>
+        <div class="dq-body">Fund-of-funds, secondaries, CLO managers don't prospect companies directly. Different motion entirely.</div>
+      </div>
+    </div>
+    <p>
+      A seventh, lighter cut runs at the end: <strong>systematic or quant strategies.</strong> If a firm has already built its data infrastructure, Clay doesn't add a layer. Claygent flags those from each firm's own website copy.
+    </p>
+  </div>
+</div>
+
+<div class="content-section">
+  <div class="container fade-up">
+    <div class="section-eyebrow">The Data Hack</div>
+    <h2>Bloomberg, PitchBook, and S&amp;P locked the door. Regulation forced one open.</h2>
+    <p>
+      Clay's native enrichments are built for SaaS. Financial services is a different problem: the incumbents spent decades building proprietary databases of private fund data — <strong>that data is their product</strong>, expensive and deliberately unavailable through the third-party APIs Clay integrates with. Trying to build a fin-services TAM the way you'd build a SaaS TAM, you run out of road fast.
+    </p>
+
+    <div class="diagram">
+      <svg viewBox="0 0 720 290" xmlns="http://www.w3.org/2000/svg" font-family="Inter, system-ui, sans-serif">
+        <defs>
+          <marker id="arrgreen" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+            <path d="M0,0 L8,4 L0,8 Z" fill="#135b45"/>
+          </marker>
+        </defs>
+
+        <!-- Locked vendors -->
+        <text x="180" y="28" text-anchor="middle" font-size="10" font-weight="700" fill="#737373" letter-spacing="0.1em">PROPRIETARY · GATED</text>
+
+        <rect x="40" y="44" width="280" height="116" rx="10" fill="#f5f2eb" stroke="rgba(21,21,21,0.15)" stroke-dasharray="4,4"/>
+
+        <rect x="60" y="64" width="80" height="48" rx="6" fill="#fff" stroke="rgba(21,21,21,0.1)"/>
+        <text x="100" y="84" text-anchor="middle" font-size="12" font-weight="700" fill="#151515">Bloomberg</text>
+        <text x="100" y="100" text-anchor="middle" font-size="10" fill="#737373">paid API</text>
+
+        <rect x="148" y="64" width="80" height="48" rx="6" fill="#fff" stroke="rgba(21,21,21,0.1)"/>
+        <text x="188" y="84" text-anchor="middle" font-size="12" font-weight="700" fill="#151515">PitchBook</text>
+        <text x="188" y="100" text-anchor="middle" font-size="10" fill="#737373">paid API</text>
+
+        <rect x="236" y="64" width="80" height="48" rx="6" fill="#fff" stroke="rgba(21,21,21,0.1)"/>
+        <text x="276" y="84" text-anchor="middle" font-size="12" font-weight="700" fill="#151515">S&amp;P</text>
+        <text x="276" y="100" text-anchor="middle" font-size="10" fill="#737373">paid API</text>
+
+        <text x="180" y="138" text-anchor="middle" font-size="11" fill="#737373" font-style="italic">Decades of locked private-fund data</text>
+
+        <!-- Open door -->
+        <text x="540" y="28" text-anchor="middle" font-size="10" font-weight="700" fill="#135b45" letter-spacing="0.1em">REGULATION FORCED OPEN</text>
+
+        <rect x="400" y="44" width="280" height="116" rx="10" fill="rgba(19,91,69,0.06)" stroke="#135b45" stroke-width="1.5"/>
+        <text x="540" y="80" text-anchor="middle" font-size="14" font-weight="700" fill="#135b45">EDGAR Full-Text</text>
+        <text x="540" y="100" text-anchor="middle" font-size="11" fill="#135b45">Free · unauthenticated · public</text>
+        <text x="540" y="118" text-anchor="middle" font-size="11" fill="#737373">SEC Form D filings</text>
+        <text x="540" y="138" text-anchor="middle" font-size="11" fill="#737373" font-style="italic">Every private fund raise · disclosed by law</text>
+
+        <!-- Outcome -->
+        <line x1="540" y1="166" x2="540" y2="200" stroke="#135b45" stroke-width="1.5" marker-end="url(#arrgreen)"/>
+
+        <rect x="380" y="208" width="320" height="48" rx="8" fill="#135b45"/>
+        <text x="540" y="227" text-anchor="middle" font-size="11" font-weight="700" fill="rgba(255,255,255,0.85)" letter-spacing="0.08em">CLAY HTTP COLUMN</text>
+        <text x="540" y="246" text-anchor="middle" font-size="13" font-weight="600" fill="#fff">Active fund disqualifier · zero cost</text>
+      </svg>
+      <div class="diagram-caption">Every private fund raise triggers a Form D filing. The SEC publishes them. Clay's HTTP column reads them.</div>
+    </div>
+
+    <p>
+      Two things broke and had to be designed around. EDGAR registrant names are legal entities, not brands — Andreessen Horowitz returns 900 hits because every fund vehicle files separately. The count is noisy, but the existence of a recent filing is reliable, which is all the disqualifier needed. The API also doesn't sort by date, so the plan to extract the most recent filing simplified into a binary pass/fail.
+    </p>
+
+    <div class="pullquote">
+      A good GTM engineer can build a flow. A great one knows where the information lives — and where regulation forced the door open anyway.
+    </div>
+  </div>
+</div>
+
+<div class="content-section">
+  <div class="container fade-up">
+    <div class="section-eyebrow">The Three Segments</div>
+    <h2>Real segmentation cuts by motion, not by filter.</h2>
+    <p>
+      The qualified universe came in at 454 firms. Three motions emerged — each with its own messaging logic, sourcing pain, and playbook.
+    </p>
+
+    <div class="segments-grid">
+      <div class="seg-card">
+        <div class="seg-count">190</div>
+        <div class="seg-name">Equity Acquirers</div>
+        <div class="seg-desc">Mid-market PE buying control positions in companies that never run a process. Sourcing pain: finding family-owned operators before a banker catches them.</div>
+        <div class="seg-tag">Buy-and-build motion</div>
+      </div>
+      <div class="seg-card">
+        <div class="seg-count">236</div>
+        <div class="seg-name">Venture Hunters</div>
+        <div class="seg-desc">Growth and venture funds chasing inflection points. Sourcing edge: surfacing founders weeks before they raise, not after the deck circulates.</div>
+        <div class="seg-tag">Inflection motion</div>
+      </div>
+      <div class="seg-card">
+        <div class="seg-count">28</div>
+        <div class="seg-name">Capital Originators</div>
+        <div class="seg-desc">Private credit and structured capital firms originating deals directly. Smaller universe, sharper signal — when they need a target, the criteria are exact.</div>
+        <div class="seg-tag">Direct origination</div>
+      </div>
+    </div>
+
+    <p>
+      Each segment got a 150-word playbook, a different status-quo tool to position Clay against, and a different sector emphasis. <strong>A single message to all 454 firms is louder than the audience.</strong> Three messages routed by motion is the difference between a list and a system.
+    </p>
+  </div>
+</div>
+
+<div class="content-section">
+  <div class="container fade-up">
+    <div class="section-eyebrow">Inside the Build</div>
+    <h2>One workbook. Three motion-tabs.</h2>
+    <p>
+      Every column described above lives in the same surface — disqualifier logic, EDGAR call, segment routing, formula engine. The bottom-tab segments are the segmentation: each tab is its own filtered view on the same enriched universe. A record's segment is decided by which qualifier columns it lights up.
+    </p>
+
+    <div class="diagram">
+      <svg viewBox="0 0 720 460" xmlns="http://www.w3.org/2000/svg" font-family="Inter, system-ui, sans-serif">
+        <defs>
+          <marker id="arrwb1" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+            <path d="M0,0 L8,4 L0,8 Z" fill="#135b45"/>
+          </marker>
+          <marker id="arrwb2" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+            <path d="M0,0 L8,4 L0,8 Z" fill="#135b45"/>
+          </marker>
+        </defs>
+
+        <!-- TOP ANNOTATION: EDGAR -->
+        <text x="500" y="16" font-size="9.5" font-weight="700" fill="#135b45" letter-spacing="0.06em">EDGAR HTTP CALL</text>
+        <text x="500" y="29" font-size="10" fill="#135b45" font-style="italic">disqualifier in the column</text>
+        <line x1="498" y1="36" x2="450" y2="98" stroke="#135b45" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#arrwb1)"/>
+
+        <!-- WORKBOOK FRAME -->
+        <rect x="20" y="50" width="680" height="346" rx="10" fill="#fff" stroke="rgba(21,21,21,0.12)"/>
+
+        <!-- Header strip background -->
+        <rect x="20" y="50" width="680" height="36" fill="#fafaf6"/>
+        <line x1="20" y1="86" x2="700" y2="86" stroke="rgba(21,21,21,0.08)"/>
+
+        <!-- Breadcrumb + stats -->
+        <text x="36" y="68" font-size="8.5" font-weight="700" fill="#737373" letter-spacing="0.08em">CLAY · CLAY FOR THE FS VERTICAL (DEAL SOURCING) · COMPANIES VIEW</text>
+        <text x="36" y="80" font-size="10" font-weight="500" fill="#151515">2,571 rows · 32 / 45 columns enriched · 63% complete</text>
+
+        <!-- Highlight band on EDGAR column -->
+        <rect x="380" y="86" width="124" height="220" fill="rgba(19,91,69,0.05)"/>
+
+        <!-- Column header row -->
+        <rect x="20" y="86" width="680" height="22" fill="#f5f2eb"/>
+        <line x1="20" y1="108" x2="700" y2="108" stroke="rgba(21,21,21,0.08)"/>
+        <text x="40" y="101" font-size="8.5" font-weight="700" fill="#737373" letter-spacing="0.06em">NAME</text>
+        <text x="180" y="101" font-size="8.5" font-weight="700" fill="#737373" letter-spacing="0.06em">DESCRIPTION</text>
+        <text x="388" y="101" font-size="8.5" font-weight="700" fill="#135b45" letter-spacing="0.06em">EDGAR_ACTIVE_FUND</text>
+        <text x="516" y="101" font-size="8.5" font-weight="700" fill="#737373" letter-spacing="0.06em">HEADCOUNT</text>
+        <text x="592" y="101" font-size="8.5" font-weight="700" fill="#737373" letter-spacing="0.06em">SEGMENT</text>
+
+        <!-- Column dividers -->
+        <line x1="170" y1="86" x2="170" y2="306" stroke="rgba(21,21,21,0.05)"/>
+        <line x1="380" y1="86" x2="380" y2="306" stroke="rgba(21,21,21,0.05)"/>
+        <line x1="504" y1="86" x2="504" y2="306" stroke="rgba(21,21,21,0.05)"/>
+        <line x1="582" y1="86" x2="582" y2="306" stroke="rgba(21,21,21,0.05)"/>
+
+        <!-- Row 1 -->
+        <text x="40" y="128" font-size="10.5" font-weight="600" fill="#151515">Sequoia Capital</text>
+        <text x="180" y="128" font-size="9.5" fill="#737373">Venture firm partnering with bold founders</text>
+        <text x="388" y="128" font-size="10" font-weight="600" fill="#135b45">✓ Active fund</text>
+        <text x="516" y="128" font-size="10" fill="#737373">350</text>
+        <text x="592" y="128" font-size="10" fill="#151515">Venture Seeker</text>
+        <line x1="20" y1="138" x2="700" y2="138" stroke="rgba(21,21,21,0.04)"/>
+
+        <!-- Row 2 -->
+        <text x="40" y="158" font-size="10.5" font-weight="600" fill="#151515">Accel-KKR</text>
+        <text x="180" y="158" font-size="9.5" fill="#737373">Tech-focused PE in mid-market software</text>
+        <text x="388" y="158" font-size="10" font-weight="600" fill="#135b45">✓ Active fund</text>
+        <text x="516" y="158" font-size="10" fill="#737373">110</text>
+        <text x="592" y="158" font-size="10" fill="#151515">Equity Acquirer</text>
+        <line x1="20" y1="168" x2="700" y2="168" stroke="rgba(21,21,21,0.04)"/>
+
+        <!-- Row 3 -->
+        <text x="40" y="188" font-size="10.5" font-weight="600" fill="#151515">Andreessen Horowitz</text>
+        <text x="180" y="188" font-size="9.5" fill="#737373">Venture firm focused on transformative tech</text>
+        <text x="388" y="188" font-size="10" font-weight="600" fill="#135b45">✓ Active fund</text>
+        <text x="516" y="188" font-size="10" fill="#737373">580</text>
+        <text x="592" y="188" font-size="10" fill="#151515">Venture Seeker</text>
+        <line x1="20" y1="198" x2="700" y2="198" stroke="rgba(21,21,21,0.04)"/>
+
+        <!-- Row 4 -->
+        <text x="40" y="218" font-size="10.5" font-weight="600" fill="#151515">Francisco Partners</text>
+        <text x="180" y="218" font-size="9.5" fill="#737373">PE in tech-enabled businesses</text>
+        <text x="388" y="218" font-size="10" font-weight="600" fill="#135b45">✓ Active fund</text>
+        <text x="516" y="218" font-size="10" fill="#737373">220</text>
+        <text x="592" y="218" font-size="10" fill="#151515">Equity Acquirer</text>
+        <line x1="20" y1="228" x2="700" y2="228" stroke="rgba(21,21,21,0.04)"/>
+
+        <!-- Row 5 -->
+        <text x="40" y="248" font-size="10.5" font-weight="600" fill="#151515">Insight Partners</text>
+        <text x="180" y="248" font-size="9.5" fill="#737373">Software-focused growth and venture</text>
+        <text x="388" y="248" font-size="10" font-weight="600" fill="#135b45">✓ Active fund</text>
+        <text x="516" y="248" font-size="10" fill="#737373">480</text>
+        <text x="592" y="248" font-size="10" fill="#151515">Venture Seeker</text>
+        <line x1="20" y1="258" x2="700" y2="258" stroke="rgba(21,21,21,0.04)"/>
+
+        <!-- Row 6 -->
+        <text x="40" y="278" font-size="10.5" font-weight="600" fill="#151515">JMI Equity</text>
+        <text x="180" y="278" font-size="9.5" fill="#737373">Growth equity in software</text>
+        <text x="388" y="278" font-size="10" font-weight="600" fill="#135b45">✓ Active fund</text>
+        <text x="516" y="278" font-size="10" fill="#737373">60</text>
+        <text x="592" y="278" font-size="10" fill="#151515">Equity Acquirer</text>
+        <line x1="20" y1="288" x2="700" y2="288" stroke="rgba(21,21,21,0.04)"/>
+
+        <!-- Ellipsis -->
+        <text x="40" y="302" font-size="9.5" font-style="italic" fill="#999">2,565 more rows</text>
+
+        <!-- Tab strip background -->
+        <rect x="20" y="306" width="680" height="90" fill="#f5f2eb"/>
+        <line x1="20" y1="306" x2="700" y2="306" stroke="rgba(21,21,21,0.08)"/>
+
+        <!-- Tab labels (inactive) -->
+        <text x="44" y="332" font-size="10" fill="#737373">Overview</text>
+        <text x="106" y="332" font-size="10" fill="#737373">People</text>
+
+        <!-- Active: Companies -->
+        <rect x="148" y="316" width="84" height="28" rx="3" fill="#fff" stroke="rgba(21,21,21,0.15)"/>
+        <text x="190" y="334" text-anchor="middle" font-size="10.5" font-weight="700" fill="#151515">Companies</text>
+
+        <!-- Segment tabs (highlighted) -->
+        <rect x="248" y="316" width="120" height="28" rx="3" fill="rgba(19,91,69,0.08)" stroke="rgba(19,91,69,0.25)"/>
+        <text x="308" y="334" text-anchor="middle" font-size="10" font-weight="600" fill="#135b45">Equity Acquirer</text>
+
+        <rect x="378" y="316" width="120" height="28" rx="3" fill="rgba(19,91,69,0.08)" stroke="rgba(19,91,69,0.25)"/>
+        <text x="438" y="334" text-anchor="middle" font-size="10" font-weight="600" fill="#135b45">Venture Seeker</text>
+
+        <rect x="508" y="316" width="138" height="28" rx="3" fill="rgba(19,91,69,0.08)" stroke="rgba(19,91,69,0.25)"/>
+        <text x="577" y="334" text-anchor="middle" font-size="10" font-weight="600" fill="#135b45">Capital Originator</text>
+
+        <!-- Bottom annotation: segment tabs -->
+        <line x1="438" y1="370" x2="438" y2="346" stroke="#135b45" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#arrwb2)"/>
+        <text x="438" y="384" text-anchor="middle" font-size="10" font-weight="700" fill="#135b45" letter-spacing="0.04em">SEGMENTATION LIVES HERE</text>
+        <text x="438" y="397" text-anchor="middle" font-size="9.5" fill="#135b45" font-style="italic">three motion-views on the same enriched universe</text>
+      </svg>
+      <div class="diagram-caption">Stylized view of the live workbook (April 2026). Real firms, real columns, real tab structure.</div>
+    </div>
+
+    <p>
+      The three segments aren't filters laid on top — they're the table's primary dimensions. Each tab inherits the same enriched universe and applies its own message logic, sector emphasis, and Smartlead sequence downstream. <strong>The segmentation lives in the workbook, not in a deck.</strong>
+    </p>
+  </div>
+</div>
+
+<div class="content-section">
+  <div class="container fade-up">
+    <div class="section-eyebrow">The Email Engine</div>
+    <h2>63 unique combinations. Zero AI credits.</h2>
+    <p>
+      Each segment splits further by investment vehicle, sector, and seniority — and each cut changes the message. Hand-writing every variation is impractical. Burning Claygent credits for it is wasteful when the structure is deterministic. So the engine runs on <strong>five formula columns</strong> composing every message from three inputs: segment, sector, seniority.
+    </p>
+
+    <div class="formula-row">
+      <div class="formula">
+        <div class="formula-name">COMMENT_1</div>
+        <div class="formula-desc">Problem statement by title</div>
+      </div>
+      <div class="formula">
+        <div class="formula-name">COMMENT_2</div>
+        <div class="formula-desc">Sector-specific proof line</div>
+      </div>
+      <div class="formula">
+        <div class="formula-name">CONNECTOR</div>
+        <div class="formula-desc">Positions Clay vs. status quo</div>
+      </div>
+      <div class="formula">
+        <div class="formula-name">CTA</div>
+        <div class="formula-desc">Closes with firm name</div>
+      </div>
+      <div class="formula">
+        <div class="formula-name">FINAL_EMAIL</div>
+        <div class="formula-desc">Assembles all four</div>
+      </div>
+    </div>
+
+    <p>
+      A Partner gets a different opening argument than an Analyst. <em>"Every founder-led SaaS company in your ARR band, enriched with hiring velocity"</em> is a different sentence than <em>"every family-owned industrial that never shows up in PitchBook."</em> Five formulas, three inputs, <strong>63 deterministic combinations.</strong> Fully editable. Zero credits.
+    </p>
+    <p>
+      For delivery, the same table feeds a three-touch Smartlead sequence — email, LinkedIn, email close — with a single CONTACT_STATUS column tracked by webhook from <em>Ready to Send</em> through <em>Pushed to CRM</em> through <em>Qualified Opportunity.</em> The deterministic engine sits where Claygent would have, doing $0.05/contact AI work at the cost of a formula recalc.
+    </p>
+  </div>
+</div>
+
+<div class="content-section">
+  <div class="container fade-up">
+    <div class="section-eyebrow">The AI Layer, Earned</div>
+    <h2>Trim before AI runs.</h2>
+    <p>
+      Formulas handle structure. They can't say anything specifically true about the person receiving the email — that's Claygent's job, and Claygent costs credits. Running it on 190 contacts wastes most of them on people who wouldn't pass a basic filter. <strong>Trim aggressively before AI runs at all.</strong>
+    </p>
+
+    <div class="funnel">
+      <div class="funnel-row">
+        <div class="funnel-num">190</div>
+        <div class="funnel-label">Equity Acquirers, post title filter</div>
+      </div>
+      <div class="funnel-arrow">↓ Redundant title filter</div>
+      <div class="funnel-row">
+        <div class="funnel-num">108</div>
+        <div class="funnel-label">Cleaner title set</div>
+      </div>
+      <div class="funnel-arrow">↓ Email enrichment</div>
+      <div class="funnel-row">
+        <div class="funnel-num">99</div>
+        <div class="funnel-label">Verified addresses only</div>
+      </div>
+      <div class="funnel-arrow">↓ Blank summaries removed</div>
+      <div class="funnel-row">
+        <div class="funnel-num">47</div>
+        <div class="funnel-label">Personalization material exists</div>
+      </div>
+      <div class="funnel-arrow">↓ Summary quality screen</div>
+      <div class="funnel-row">
+        <div class="funnel-num">42</div>
+        <div class="funnel-label">Summaries assessed for usefulness</div>
+      </div>
+      <div class="funnel-arrow">↓ Claygent: is this summary about the person?</div>
+      <div class="funnel-row" style="border-color: var(--green); background: rgba(19,91,69,0.05);">
+        <div class="funnel-num" style="color: var(--green);">5</div>
+        <div class="funnel-label"><strong>Qualified prospects with real, personal data</strong></div>
+      </div>
+    </div>
+
+    <p>
+      A final Claygent screen kept only the records where the summary was actually about the individual — not the firm or the fund strategy. <strong>Five prospects.</strong> Verified emails, relevant titles, summaries personal enough to write a sentence against. The honest list — built without burning credits on anyone who wouldn't have made it past basic filtering.
+    </p>
+  </div>
+</div>
+
+<div class="content-section">
+  <div class="container fade-up">
+    <div class="section-eyebrow">The Discipline</div>
+    <h2>The infrastructure was real. The decision to send was a separate question.</h2>
+    <p>
+      Five contacts cleared every filter. The machine was complete. Before any send, the question that actually matters is the simplest one. <strong>Have I earned the right to make this claim, to this person, in this market?</strong>
+    </p>
+
+    <div class="pullquote">
+      Sending without that ground is not GTM engineering. It's hypothesis laundering dressed up as outreach.
+    </div>
+
+    <p>
+      Reaching senior PE professionals with a representation that hasn't been validated — without coordinating with Clay's existing financial-services presence — is a different action than the engineering. It's a claim, and a claim has to be earned. <strong>Discovery first. Reference case. Then the send.</strong>
+    </p>
+    <p>
+      That's the pipeline this build actually produced — and it's worth more than a send rate.
+    </p>
+  </div>
+</div>
+
+<div class="content-section">
+  <div class="container fade-up">
+    <div class="section-eyebrow">By the Numbers</div>
+    <h2>What got built.</h2>
+
+    <div class="stat-row">
+      <div class="stat-card">
+        <div class="stat-card-val">454</div>
+        <div class="stat-card-lbl">Qualified firms across three segments</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-val">63</div>
+        <div class="stat-card-lbl">Deterministic email variants, zero AI credits</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-val">190 → 5</div>
+        <div class="stat-card-lbl">Trim funnel before Claygent runs</div>
+      </div>
+    </div>
+
+    <div class="chip-row">
+      <span class="chip">Clay</span>
+      <span class="chip">Claygent</span>
+      <span class="chip">EDGAR Full-Text Search</span>
+      <span class="chip">Smartlead</span>
+      <span class="chip chip-dark">Vertical Positioning</span>
+      <span class="chip chip-dark">ICP &amp; Disqualifiers</span>
+      <span class="chip chip-dark">Segmentation</span>
+      <span class="chip chip-dark">Formula-Based Personalization</span>
+      <span class="chip chip-dark">Webhook Status Tracking</span>
+    </div>
+  </div>
+</div>
+
+<div class="page-cta">
+  <div class="container fade-up">
+    <h2>Want to walk through the table<br><em>or the segmentation logic?</em></h2>
+    <p>
+      Happy to show the EDGAR workaround, the formula layer, or the discovery motion that earns the send.
+    </p>
+    <a href="mailto:a6enn95@gmail.com" class="btn-primary">Get in Touch</a>
+    <a href="index.html#projects" class="btn-outline">Back to Projects</a>
+  </div>
+</div>
+
+<footer>
+  <span>© 2026 Adam Genn</span>
+  <span>Built with Claude. Because that's the point.</span>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        const siblings = entry.target.parentElement.querySelectorAll('.fade-up');
+        siblings.forEach((el, idx) => {
+          setTimeout(() => el.classList.add('visible'), idx * 80);
+        });
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

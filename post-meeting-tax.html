@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Post-Meeting Tax Every Sales Rep Pays — Adam Genn</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #f5f2eb; --bg2: #ffffff; --bg3: #ede9df;
+      --border: rgba(21,21,21,0.1); --border2: rgba(21,21,21,0.06);
+      --green: #135b45; --green-mid: #1a7a5e;
+      --text: #151515; --muted: #737373;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: 'Inter', system-ui, sans-serif;
+      line-height: 1.75; overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+    h1, h2, h3 { font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; letter-spacing: -0.01em; }
+    a { color: inherit; text-decoration: none; }
+    .fade-up { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: 60px; display: flex; align-items: center; justify-content: space-between;
+      padding: 0 3rem; background: rgba(245,242,235,0.9);
+      backdrop-filter: blur(12px); border-bottom: 1px solid var(--border2);
+    }
+    .nav-logo { font-family: 'Instrument Serif', Georgia, serif; font-size: 1.2rem; letter-spacing: -0.02em; }
+    .nav-back {
+      display: flex; align-items: center; gap: 0.4rem;
+      font-size: 0.82rem; font-weight: 500; color: var(--muted);
+      transition: color 0.2s;
+    }
+    .nav-back:hover { color: var(--text); }
+
+    .container { max-width: 720px; margin: 0 auto; padding: 0 3rem; }
+
+    .btn-primary {
+      display: inline-block; padding: 0.7rem 1.6rem;
+      background: var(--green); color: #fff; border-radius: 6px;
+      font-size: 0.88rem; font-weight: 600;
+      transition: background 0.2s, transform 0.15s;
+      margin-right: 0.5rem;
+    }
+    .btn-primary:hover { background: var(--green-mid); transform: translateY(-1px); }
+    .btn-outline {
+      display: inline-block; padding: 0.7rem 1.6rem;
+      border: 1px solid var(--border); color: var(--muted);
+      border-radius: 6px; font-size: 0.88rem; font-weight: 500;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-outline:hover { border-color: var(--text); color: var(--text); }
+
+    .page-hero { padding: 130px 0 60px; border-bottom: 1px solid var(--border2); }
+    .hero-eyebrow {
+      font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--green); margin-bottom: 1.5rem;
+    }
+    .page-hero h1 {
+      font-size: clamp(2.4rem, 5vw, 3.6rem);
+      line-height: 1.1; margin-bottom: 1.5rem; letter-spacing: -0.015em;
+    }
+    .page-hero h1 em { color: var(--green); font-style: italic; }
+    .deck {
+      font-size: 1.18rem; color: var(--muted);
+      line-height: 1.7; max-width: 600px;
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-style: italic; margin-bottom: 2.5rem;
+    }
+    .hero-meta {
+      display: flex; gap: 2.5rem; flex-wrap: wrap;
+      padding-top: 1.5rem; border-top: 1px solid var(--border2);
+      font-size: 0.82rem; color: var(--muted);
+    }
+    .hero-meta strong { color: var(--text); font-weight: 600; }
+
+    article { padding: 5rem 0 2rem; }
+    article p {
+      font-size: 1.02rem; line-height: 1.85; color: #2a2a2a;
+      margin-bottom: 1.4rem;
+    }
+    article p strong { color: var(--text); font-weight: 600; }
+    article p em { color: var(--text); font-style: italic; }
+    article h2 {
+      font-size: 1.75rem; margin-top: 3.5rem; margin-bottom: 1.25rem;
+      color: var(--text); letter-spacing: -0.01em;
+    }
+    article hr { border: 0; border-top: 1px solid var(--border2); margin: 3rem 0; }
+
+    .lede::first-letter {
+      font-family: 'Instrument Serif', Georgia, serif;
+      float: left; font-size: 3.6rem; line-height: 0.95;
+      color: var(--green); padding: 0.35rem 0.6rem 0 0;
+      font-weight: 400;
+    }
+    .pullquote {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-style: italic; font-size: 1.55rem; line-height: 1.4;
+      color: var(--green); border-left: 3px solid var(--green);
+      padding: 0.5rem 0 0.5rem 1.5rem;
+      margin: 2.5rem 0; max-width: 600px;
+      letter-spacing: -0.005em;
+    }
+
+    .four-things {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.75rem;
+      margin: 2rem 0 2.5rem;
+    }
+    .thing-card {
+      background: var(--bg2);
+      border: 1px solid var(--border2);
+      border-radius: 10px;
+      padding: 1.25rem 1.1rem;
+    }
+    .thing-num {
+      font-size: 0.65rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--green); margin-bottom: 0.45rem;
+    }
+    .thing-title {
+      font-size: 0.85rem; font-weight: 600;
+      color: var(--text); margin-bottom: 0.3rem;
+    }
+    .thing-desc {
+      font-size: 0.72rem; color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .diagram {
+      background: var(--bg2);
+      border: 1px solid var(--border2);
+      border-radius: 12px;
+      padding: 1.75rem 1.5rem 1.25rem;
+      margin: 2rem 0 2.5rem;
+    }
+    .diagram svg { width: 100%; height: auto; display: block; }
+    .diagram-caption {
+      font-size: 0.78rem; color: var(--muted);
+      text-align: center; margin-top: 0.9rem;
+      font-style: italic;
+    }
+
+    .stat-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      margin: 2rem 0 2.5rem;
+    }
+    .stat-cell {
+      background: var(--bg2);
+      border: 1px solid var(--border2);
+      border-radius: 10px;
+      padding: 1.4rem 1.1rem;
+      text-align: center;
+    }
+    .stat-num {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 2.2rem; line-height: 1; color: var(--green);
+      margin-bottom: 0.4rem;
+    }
+    .stat-label {
+      font-size: 0.74rem; color: var(--muted);
+      letter-spacing: 0.02em;
+    }
+
+    .closing-section {
+      background: var(--bg2); border-top: 1px solid var(--border2);
+      padding: 5rem 0; text-align: center;
+    }
+    .closing-section h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); margin-bottom: 1rem; }
+    .closing-section h2 em { color: var(--green); font-style: italic; }
+    .closing-section p {
+      color: var(--muted); font-size: 1rem;
+      max-width: 480px; margin: 0 auto 2.5rem; line-height: 1.8;
+    }
+
+    footer {
+      padding: 1.5rem 3rem; border-top: 1px solid var(--border2);
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 0.78rem; color: var(--muted);
+    }
+
+    @media (max-width: 768px) {
+      .container { padding: 0 1.5rem; }
+      nav { padding: 0 1.5rem; }
+      footer { padding: 1.5rem; }
+      article p { font-size: 0.97rem; }
+      .pullquote { font-size: 1.25rem; margin: 1.75rem 0; padding-left: 1rem; }
+      .four-things { grid-template-columns: 1fr 1fr; }
+      .stat-row { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 540px) {
+      .four-things { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Adam Genn</div>
+  <a href="index.html#writing" class="nav-back">← Back to portfolio</a>
+</nav>
+
+<div class="page-hero">
+  <div class="container fade-up">
+    <div class="hero-eyebrow">Essay · Sales Systems</div>
+    <h1>The Post-Meeting Tax<br><em>Every Sales Rep Pays.</em></h1>
+    <p class="deck">
+      Nobody treats post-meeting follow-up as a systems problem. Everyone treats it as a rep behavior problem. That's why it stays broken.
+    </p>
+    <div class="hero-meta">
+      <span><strong>Subject</strong> Sales workflows, treated as systems</span>
+      <span><strong>Read time</strong> 4 min</span>
+    </div>
+  </div>
+</div>
+
+<article>
+  <div class="container fade-up">
+    <p class="lede">
+      After every sales meeting, a rep owes four things to four different places.
+    </p>
+    <div class="four-things">
+      <div class="thing-card">
+        <div class="thing-num">Owed 1</div>
+        <div class="thing-title">Cleaned summary</div>
+        <div class="thing-desc">to their notes</div>
+      </div>
+      <div class="thing-card">
+        <div class="thing-num">Owed 2</div>
+        <div class="thing-title">Activity log</div>
+        <div class="thing-desc">to the CRM</div>
+      </div>
+      <div class="thing-card">
+        <div class="thing-num">Owed 3</div>
+        <div class="thing-title">Team update</div>
+        <div class="thing-desc">to Slack</div>
+      </div>
+      <div class="thing-card">
+        <div class="thing-num">Owed 4</div>
+        <div class="thing-title">Follow-up email</div>
+        <div class="thing-desc">that moves the deal</div>
+      </div>
+    </div>
+    <p>
+      Most reps do one or two. Few do all four. Almost none do them fast enough to beat the ping from leadership asking for the update.
+    </p>
+    <p>
+      <strong>Nobody treats this as a systems problem. Everyone treats it as a rep behavior problem.</strong> That's why it never gets fixed.
+    </p>
+
+    <h2>The Pattern</h2>
+    <p>
+      The meeting itself is well-resourced. Calendar invite. Prep doc. Recording. Talk track. Then the call ends, and the next 30 minutes are completely unstructured. Nothing is built for them.
+    </p>
+    <p>
+      Reps are expected to convert a live conversation into coordinated action across three or four systems, from memory, while their next meeting is already loading. They are working off notes they wrote while trying to pay attention to the customer in the first place.
+    </p>
+
+    <div class="pullquote">
+      Post-meeting follow-up was never treated as a system. It was treated as a habit. And habits don't scale.
+    </div>
+
+    <h2>Where the Cost Hides</h2>
+    <p>
+      Leadership sees missed follow-ups and concludes the rep needs to be better. What they don't see is the splitting of attention happening inside the call — listening, responding, handling objections, reading the room, taking notes. Something gets deprioritized. It is always the documentation.
+    </p>
+    <p>
+      So notes are incomplete. CRM goes stale. The follow-up email goes out late, generic, or not at all. <strong>The whole team absorbs the cost of a workflow nobody built.</strong> Leadership loses visibility. Reps lose time. Deals lose momentum.
+    </p>
+
+    <div class="stat-row">
+      <div class="stat-cell">
+        <div class="stat-num">30–45m</div>
+        <div class="stat-label">per meeting, done right</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num">4–7 hrs</div>
+        <div class="stat-label">per rep, per week</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num">0</div>
+        <div class="stat-label">new pipeline created</div>
+      </div>
+    </div>
+
+    <h2>The Fix Is the Input</h2>
+    <p>
+      This looks like a high-effort problem until you understand what makes it hard. It is not the volume of tasks. <strong>It is the absence of context.</strong>
+    </p>
+    <p>
+      Without knowing where the deal is going, what stage it's in, and what the cycle demands next, any automation produces output into a void. Solve the context problem and the effort drops fast.
+    </p>
+
+    <div class="diagram">
+      <svg viewBox="0 0 720 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Post-meeting pipeline: from rep cognitive load to automated pipeline">
+        <defs>
+          <marker id="arrm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#737373" />
+          </marker>
+          <marker id="arrgreen" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#135b45" />
+          </marker>
+        </defs>
+
+        <!-- Title row -->
+        <text x="20" y="22" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#737373" letter-spacing="1.5">BEFORE</text>
+        <text x="20" y="180" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#135b45" letter-spacing="1.5">AFTER</text>
+
+        <!-- BEFORE: Meeting -> Rep brain -> 4 systems (chaotic) -->
+        <rect x="20" y="40" width="120" height="60" rx="8" fill="#f5f2eb" stroke="rgba(21,21,21,0.1)" />
+        <text x="80" y="68" font-family="Inter, sans-serif" font-size="13" font-weight="600" fill="#151515" text-anchor="middle">Meeting ends</text>
+        <text x="80" y="86" font-family="Inter, sans-serif" font-size="10" fill="#737373" text-anchor="middle">Adrenaline, half-notes</text>
+
+        <line x1="140" y1="70" x2="180" y2="70" stroke="#737373" stroke-width="1.5" marker-end="url(#arrm)" />
+
+        <rect x="180" y="35" width="170" height="70" rx="8" fill="#fff" stroke="rgba(21,21,21,0.1)" />
+        <text x="265" y="60" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#151515" text-anchor="middle">Rep does it from memory</text>
+        <text x="265" y="78" font-family="Inter, sans-serif" font-size="10" fill="#737373" text-anchor="middle">while next call loads</text>
+        <text x="265" y="94" font-family="Inter, sans-serif" font-size="10" fill="#b91c1c" text-anchor="middle" font-weight="600">→ context lost</text>
+
+        <line x1="350" y1="70" x2="390" y2="70" stroke="#737373" stroke-width="1.5" marker-end="url(#arrm)" />
+
+        <!-- 4 outputs (each partially failed) -->
+        <g font-family="Inter, sans-serif" font-size="10" fill="#151515">
+          <rect x="395" y="30" width="135" height="22" rx="4" fill="#f5f2eb" stroke="rgba(21,21,21,0.1)" />
+          <text x="403" y="44" font-weight="600">Notes</text>
+          <text x="525" y="44" text-anchor="end" fill="#b91c1c" font-weight="600">incomplete</text>
+
+          <rect x="395" y="58" width="135" height="22" rx="4" fill="#f5f2eb" stroke="rgba(21,21,21,0.1)" />
+          <text x="403" y="72" font-weight="600">CRM log</text>
+          <text x="525" y="72" text-anchor="end" fill="#b91c1c" font-weight="600">stale</text>
+
+          <rect x="395" y="86" width="135" height="22" rx="4" fill="#f5f2eb" stroke="rgba(21,21,21,0.1)" />
+          <text x="403" y="100" font-weight="600">Slack update</text>
+          <text x="525" y="100" text-anchor="end" fill="#b91c1c" font-weight="600">skipped</text>
+
+          <rect x="395" y="114" width="135" height="22" rx="4" fill="#f5f2eb" stroke="rgba(21,21,21,0.1)" />
+          <text x="403" y="128" font-weight="600">Follow-up email</text>
+          <text x="525" y="128" text-anchor="end" fill="#b91c1c" font-weight="600">late / generic</text>
+        </g>
+
+        <text x="555" y="76" font-family="Instrument Serif, Georgia, serif" font-style="italic" font-size="14" fill="#737373">Cost: 4–7 hrs/wk</text>
+        <text x="555" y="96" font-family="Instrument Serif, Georgia, serif" font-style="italic" font-size="14" fill="#737373">+ stalled deals</text>
+
+        <!-- divider -->
+        <line x1="20" y1="160" x2="700" y2="160" stroke="rgba(21,21,21,0.1)" stroke-dasharray="4 4" />
+
+        <!-- AFTER: Transcript + 60s input -> pipeline -> 4 outputs (clean) -->
+        <rect x="20" y="200" width="120" height="60" rx="8" fill="#f5f2eb" stroke="rgba(21,21,21,0.1)" />
+        <text x="80" y="225" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#151515" text-anchor="middle">Transcript</text>
+        <text x="80" y="243" font-family="Inter, sans-serif" font-size="10" fill="#737373" text-anchor="middle">+ 60s rep input</text>
+
+        <line x1="140" y1="230" x2="180" y2="230" stroke="#135b45" stroke-width="2" marker-end="url(#arrgreen)" />
+
+        <rect x="180" y="195" width="170" height="70" rx="8" fill="#fff" stroke="#135b45" stroke-width="1.5" />
+        <text x="265" y="218" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#135b45" text-anchor="middle">Pipeline + cycle context</text>
+        <text x="265" y="236" font-family="Inter, sans-serif" font-size="10" fill="#737373" text-anchor="middle">templates, stage logic,</text>
+        <text x="265" y="250" font-family="Inter, sans-serif" font-size="10" fill="#737373" text-anchor="middle">deal history pre-loaded</text>
+
+        <line x1="350" y1="230" x2="390" y2="230" stroke="#135b45" stroke-width="2" marker-end="url(#arrgreen)" />
+
+        <g font-family="Inter, sans-serif" font-size="10" fill="#151515">
+          <rect x="395" y="190" width="135" height="22" rx="4" fill="#f5f2eb" stroke="#135b45" stroke-width="1" />
+          <text x="403" y="204" font-weight="600">Notes</text>
+          <text x="525" y="204" text-anchor="end" fill="#135b45" font-weight="600">cleaned</text>
+
+          <rect x="395" y="218" width="135" height="22" rx="4" fill="#f5f2eb" stroke="#135b45" stroke-width="1" />
+          <text x="403" y="232" font-weight="600">CRM log</text>
+          <text x="525" y="232" text-anchor="end" fill="#135b45" font-weight="600">structured</text>
+
+          <rect x="395" y="246" width="135" height="22" rx="4" fill="#f5f2eb" stroke="#135b45" stroke-width="1" />
+          <text x="403" y="260" font-weight="600">Slack update</text>
+          <text x="525" y="260" text-anchor="end" fill="#135b45" font-weight="600">posted</text>
+
+          <rect x="395" y="274" width="135" height="22" rx="4" fill="#f5f2eb" stroke="#135b45" stroke-width="1" />
+          <text x="403" y="288" font-weight="600">Follow-up email</text>
+          <text x="525" y="288" text-anchor="end" fill="#135b45" font-weight="600">drafted in context</text>
+        </g>
+
+        <text x="555" y="232" font-family="Instrument Serif, Georgia, serif" font-style="italic" font-size="14" fill="#135b45">Cost: ~3 min</text>
+        <text x="555" y="252" font-family="Instrument Serif, Georgia, serif" font-style="italic" font-size="14" fill="#135b45">+ deals move</text>
+      </svg>
+      <div class="diagram-caption">The same four outputs. The difference is whether anyone built the pipeline.</div>
+    </div>
+
+    <p>
+      The transcript tells the system what happened. The pre-loaded context tells it where the deal is going. Templates give it the structure to get there. <strong>Once the inputs are right, judgment becomes execution — and execution is what automation is built for.</strong>
+    </p>
+    <p>
+      Happy reps are reps who get to spend their time selling. Updating systems and writing recap emails is not selling. The fix is not asking reps to try harder. The fix is building the layer that should have existed all along.
+    </p>
+  </div>
+</article>
+
+<div class="closing-section">
+  <div class="container fade-up">
+    <h2>The diagnosis is half the work.<br><em>The systems are the other half.</em></h2>
+    <p>
+      A processing pipeline that converts raw meeting transcripts into a CRM log, Slack update, summary, and follow-up email is one example — built in Clay. The fuller portfolio of GTM systems I've shipped against problems like this is in the projects.
+    </p>
+    <a href="index.html#projects" class="btn-primary">See the Builds</a>
+    <a href="mailto:a6enn95@gmail.com" class="btn-outline">Get in Touch</a>
+  </div>
+</div>
+
+<footer>
+  <span>© 2026 Adam Genn</span>
+  <span>Built with Claude. Because that's the point.</span>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

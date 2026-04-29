@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Model Selection Is an Architecture Decision · Adam Genn</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #f5f2eb; --bg2: #ffffff; --bg3: #ede9df;
+      --border: rgba(21,21,21,0.1); --border2: rgba(21,21,21,0.06);
+      --green: #135b45; --green-mid: #1a7a5e; --green-lt: #19a26c;
+      --text: #151515; --muted: #737373;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: 'Inter', system-ui, sans-serif;
+      line-height: 1.8; overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+    h1, h2, h3 { font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; letter-spacing: -0.01em; }
+    a { color: inherit; text-decoration: none; }
+    .fade-up { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: 60px; display: flex; align-items: center; justify-content: space-between;
+      padding: 0 3rem; background: rgba(245,242,235,0.9);
+      backdrop-filter: blur(12px); border-bottom: 1px solid var(--border2);
+    }
+    .nav-logo { font-family: 'Instrument Serif', Georgia, serif; font-size: 1.2rem; letter-spacing: -0.02em; }
+    .nav-back {
+      display: flex; align-items: center; gap: 0.4rem;
+      font-size: 0.82rem; font-weight: 500; color: var(--muted);
+      transition: color 0.2s;
+    }
+    .nav-back:hover { color: var(--text); }
+
+    .container { max-width: 720px; margin: 0 auto; padding: 0 3rem; }
+
+    .essay-hero { padding: 130px 0 60px; border-bottom: 1px solid var(--border2); }
+    .hero-eyebrow {
+      font-size: 0.75rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--green); margin-bottom: 1.25rem;
+    }
+    .essay-hero h1 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.15; margin-bottom: 1.5rem;
+    }
+    .essay-hero h1 em { color: var(--green); font-style: italic; }
+    .essay-deck {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-style: italic; font-size: 1.3rem;
+      color: var(--muted); line-height: 1.5;
+      max-width: 600px; margin-bottom: 2rem;
+    }
+    .meta-strip {
+      display: flex; gap: 2rem; flex-wrap: wrap;
+      padding-top: 1.5rem; border-top: 1px solid var(--border2);
+      font-size: 0.78rem; color: var(--muted);
+    }
+    .meta-strip strong { color: var(--text); font-weight: 600; }
+
+    article {
+      padding: 4rem 0 5rem;
+    }
+    article p {
+      color: var(--text); font-size: 1rem;
+      line-height: 1.85; margin-bottom: 1.4rem;
+    }
+    article p strong { font-weight: 600; }
+    article p em { font-style: italic; color: var(--green); }
+    article p:first-of-type::first-letter {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 3.6rem; font-weight: 400;
+      float: left; line-height: 0.9;
+      margin: 0.35rem 0.65rem 0 0;
+      color: var(--green);
+    }
+    article h2 {
+      font-size: 1.6rem; margin: 3rem 0 1.2rem;
+      color: var(--text);
+    }
+
+    .pullquote {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-style: italic; font-size: 1.55rem; line-height: 1.45;
+      color: var(--green); border-left: 3px solid var(--green);
+      padding: 0.5rem 0 0.5rem 1.5rem;
+      margin: 2.5rem 0; letter-spacing: -0.005em;
+    }
+
+    .ending {
+      margin-top: 3rem; padding-top: 2rem;
+      border-top: 1px solid var(--border2);
+      font-style: italic; color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .page-cta {
+      padding: 5rem 0; text-align: center;
+      background: var(--bg2);
+      border-top: 1px solid var(--border2);
+    }
+    .page-cta h2 {
+      font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+      margin-bottom: 1rem;
+    }
+    .page-cta h2 em { color: var(--green); font-style: italic; }
+    .page-cta p {
+      color: var(--muted); font-size: 1rem;
+      max-width: 480px; margin: 0 auto 2rem; line-height: 1.7;
+    }
+    .btn-primary {
+      display: inline-block; padding: 0.7rem 1.6rem;
+      background: var(--green); color: #fff; border-radius: 6px;
+      font-size: 0.88rem; font-weight: 600;
+      transition: background 0.2s, transform 0.15s;
+      margin-right: 0.5rem;
+    }
+    .btn-primary:hover { background: var(--green-mid); transform: translateY(-1px); }
+    .btn-outline {
+      display: inline-block; padding: 0.7rem 1.6rem;
+      border: 1px solid var(--border); color: var(--muted);
+      border-radius: 6px; font-size: 0.88rem; font-weight: 500;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-outline:hover { border-color: var(--text); color: var(--text); }
+
+    footer {
+      padding: 1.5rem 3rem; border-top: 1px solid var(--border2);
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 0.78rem; color: var(--muted);
+    }
+
+    .task-grid {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin: 2rem 0 2.5rem;
+    }
+    .task-row {
+      display: grid;
+      grid-template-columns: 130px 1fr 160px;
+      gap: 1.25rem;
+      padding: 0.9rem 1.5rem;
+      border-bottom: 1px solid var(--border2);
+      align-items: center;
+    }
+    .task-row:last-child { border-bottom: none; }
+    .task-row.strong { background: rgba(19,91,69,0.03); }
+    .task-type {
+      font-size: 0.88rem; font-weight: 700;
+      color: var(--text);
+    }
+    .task-example {
+      font-size: 0.83rem; color: var(--muted); line-height: 1.5;
+    }
+    .task-model {
+      font-size: 0.76rem; font-weight: 600;
+      text-align: right; white-space: nowrap;
+    }
+    .task-row.cheap .task-model { color: var(--muted); }
+    .task-row.mid .task-model { color: var(--text); }
+    .task-row.strong .task-model { color: var(--green); }
+
+    @media (max-width: 768px) {
+      .container { padding: 0 1.5rem; }
+      nav { padding: 0 1.5rem; }
+      footer { padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Adam Genn</div>
+  <a href="index.html#writing" class="nav-back">← Back to portfolio</a>
+</nav>
+
+<div class="essay-hero">
+  <div class="container fade-up">
+    <div class="hero-eyebrow">Essay · AI Architecture</div>
+    <h1>Model Selection Is an<br><em>Architecture Decision.</em></h1>
+    <div class="essay-deck">
+      The question is not "what prompt do I write." It is what type of thinking the task requires, and which model is built for that type of thinking.
+    </div>
+    <div class="meta-strip">
+      <span><strong>Context</strong> &nbsp; Cashbridge build</span>
+      <span><strong>Read</strong> &nbsp; 5 min</span>
+    </div>
+  </div>
+</div>
+
+<article>
+  <div class="container fade-up">
+
+    <p>
+      Three fictional deals. A test bench I built to prove a Clay table could process post-meeting work end to end — meeting summary, conflict detection, CRM log, Slack update, follow-up email. The architecture held up. The columns ran in the right order. Five outputs, clean and usable. With one exception.
+    </p>
+
+    <p>
+      The conflict-detection column kept returning a score of zero on a deal where the conflict was obvious. The rep had logged "ready to close end of month." The transcript showed the CFO had moved the meeting twice, outside counsel hadn't been engaged, and the prospect's own estimate was end of Q2. By every reasonable read, that's a stalled deal dressed up as a closing one. The model couldn't see it.
+    </p>
+
+    <p>
+      My first instinct was to rewrite the prompt. Tighter framing, more explicit instructions, examples of what counts as a conflict. None of it moved the score. The flag stayed at zero on a deal that anyone who knows enterprise sales would call out in five seconds.
+    </p>
+
+    <div class="pullquote">
+      The conflict was real. The model just couldn't find it.
+    </div>
+
+    <p>
+      That's when the realization landed. <strong>Finding this conflict is not pattern matching. It is inference.</strong> You have to read between the lines of a conversation, notice what the rep's framing is leaving out, and draw a conclusion about what the realistic situation actually is. That is a different type of reasoning than summarization or extraction. The default model was good at the things I was asking it to do everywhere else in the table — distill a transcript, write a summary, generate a CRM entry. It was wrong for this column.
+    </p>
+
+    <p>
+      I switched models. Same prompt. The flag fired correctly on the same deal.
+    </p>
+
+    <h2>What I actually learned</h2>
+
+    <p>
+      I had been treating model selection as an afterthought. Pick the default, write better prompts, debug from there. This build flipped that. The prompt is the instruction. The model is the kind of thinking. They are not the same dimension, and confusing them costs hours.
+    </p>
+
+    <p>
+      Looking back across the rest of the table, the columns split cleanly along this line. The meeting summary, the CRM log, the Slack update, the follow-up email — those are all transformation tasks. Take a structured input, produce a structured output in a different shape. A fast, cheap model handles them well. The conflict detector is the only column that has to reason. Read what was said, weigh it against what was claimed, decide whether the gap is meaningful. That is a different cognitive load and it deserves a different model.
+    </p>
+
+    <div class="task-grid">
+      <div class="task-row cheap">
+        <div class="task-type">Transformation</div>
+        <div class="task-example">Meeting summary → CRM entry, transcript → Slack update</div>
+        <div class="task-model">Fast model</div>
+      </div>
+      <div class="task-row cheap">
+        <div class="task-type">Extraction</div>
+        <div class="task-example">Pull structured fields from unstructured text</div>
+        <div class="task-model">Fast model</div>
+      </div>
+      <div class="task-row mid">
+        <div class="task-type">Generation</div>
+        <div class="task-example">Write a follow-up email from context and brief</div>
+        <div class="task-model">Context-dependent</div>
+      </div>
+      <div class="task-row strong">
+        <div class="task-type">Inference</div>
+        <div class="task-example">Detect a conflict between what was said and what was claimed</div>
+        <div class="task-model">Strong model ↑</div>
+      </div>
+      <div class="task-row strong">
+        <div class="task-type">Judgment</div>
+        <div class="task-example">Weigh ambiguous signals and decide what matters</div>
+        <div class="task-model">Strong model ↑</div>
+      </div>
+    </div>
+
+    <p>
+      The architecture decision in a Clay table — or any AI workflow — is not just <em>which columns do I need and in what order.</em> It is also <strong>which type of thinking does each column require, and which model is built for that thinking.</strong> Once I started routing columns deliberately, the table got faster, cheaper, and more accurate at the same time. Cheap models on transformation. Strong models only where inference earns its cost.
+    </p>
+
+    <h2>Where this lives in production</h2>
+
+    <p>
+      Most AI workflows I see in the wild are using one model everywhere. Sometimes the most expensive one because the team got burned once and overcorrected. Sometimes the cheapest one because nobody wanted to think about routing. Both are leaving real performance on the table.
+    </p>
+
+    <p>
+      The discipline is small but it compounds. Before you write the prompt, ask what type of work the column is doing. Extraction. Transformation. Generation. Inference. Judgment. Each of those has a different floor for model capability. Match the floor to the task and the rest of the system gets simpler. Skip the question and you end up either burning credits on tasks that did not need them, or staring at a zero score on a conflict you can see with your own eyes.
+    </p>
+
+    <div class="pullquote">
+      The prompt is the instruction. The model is the kind of thinking.
+    </div>
+
+    <p>
+      That sentence is the one I keep coming back to. It rewrote how I plan a Clay table, how I size a Claude API workflow, and how I review someone else's prompt when it is not behaving. The build that taught me this looked like a prototype. The principle behind it is the part that scales.
+    </p>
+
+  </div>
+</article>
+
+<div class="page-cta">
+  <div class="container fade-up">
+    <h2>The principle in practice.<br><em>See it in a live build.</em></h2>
+    <p>
+      The prospecting workflow applies this routing at every step — strong model for ICP scoring, fast model for formatting, production-tested across weeks of real outreach.
+    </p>
+    <a href="prospecting.html" class="btn-primary">See the Prospecting Build</a>
+    <a href="mailto:a6enn95@gmail.com" class="btn-outline">Get in Touch</a>
+  </div>
+</div>
+
+<footer>
+  <span>© 2026 Adam Genn</span>
+  <span>Built with Claude. Because that's the point.</span>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        const siblings = entry.target.parentElement.querySelectorAll('.fade-up');
+        siblings.forEach((el, idx) => {
+          setTimeout(() => el.classList.add('visible'), idx * 80);
+        });
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

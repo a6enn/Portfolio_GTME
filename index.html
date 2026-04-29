@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Adam Genn — GTM & Solutions Engineering</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #f5f2eb;
+      --bg2:       #ffffff;
+      --bg3:       #ede9df;
+      --border:    rgba(21,21,21,0.1);
+      --border2:   rgba(21,21,21,0.06);
+      --green:     #135b45;
+      --green-mid: #1a7a5e;
+      --green-lt:  #19a26c;
+      --text:      #151515;
+      --muted:     #737373;
+      --card-bg:   #ffffff;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', system-ui, sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    /* ── Hero dot grid ────────────────────────────────────── */
+    #hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(19,91,69,0.06) 1px, transparent 1px);
+      background-size: 30px 30px;
+      -webkit-mask-image: linear-gradient(to bottom right, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 65%);
+      mask-image: linear-gradient(to bottom right, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 65%);
+      pointer-events: none;
+    }
+
+    /* ── Scroll progress ──────────────────────────────────── */
+    #scroll-progress {
+      position: fixed; top: 0; left: 0; z-index: 200;
+      height: 2px; width: 0%;
+      background: var(--green);
+      pointer-events: none;
+    }
+
+    h1, h2, h3 { font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; letter-spacing: -0.01em; }
+    a { color: inherit; text-decoration: none; }
+
+    .serif { font-family: 'Instrument Serif', Georgia, serif; }
+    .green  { color: var(--green); }
+    .muted  { color: var(--muted); }
+
+    /* ── Fade animation ───────────────────────────────────── */
+    .fade-up {
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── Nav ──────────────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: 60px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 3rem;
+      background: rgba(245,242,235,0.9);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border2);
+    }
+
+    .nav-logo {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 1.2rem;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+
+    .nav-links {
+      display: flex; gap: 2.5rem; list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--muted);
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    .nav-cta {
+      padding: 0.45rem 1.2rem;
+      background: var(--green);
+      color: #fff;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+    .nav-cta:hover { background: var(--green-mid); }
+
+    /* ── Container ────────────────────────────────────────── */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 3rem;
+    }
+
+    section { position: relative; }
+
+    /* ── Buttons ──────────────────────────────────────────── */
+    .btn-primary {
+      display: inline-block;
+      padding: 0.7rem 1.6rem;
+      background: var(--green);
+      color: #fff;
+      border-radius: 6px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-primary:hover { background: var(--green-mid); transform: translateY(-1px); }
+
+    .btn-outline {
+      display: inline-block;
+      padding: 0.7rem 1.6rem;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 6px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-outline:hover { border-color: var(--text); color: var(--text); }
+
+    /* ── Hero ─────────────────────────────────────────────── */
+    #hero {
+      min-height: 100vh;
+      display: flex; align-items: center;
+      padding-top: 60px;
+      border-bottom: 1px solid var(--border2);
+    }
+
+    .hero-inner {
+      max-width: 780px;
+    }
+
+    .hero-nameplate {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 1.25rem;
+    }
+
+    .hero-title {
+      font-size: clamp(3.2rem, 6vw, 5.5rem);
+      line-height: 1.05;
+      margin-bottom: 1.75rem;
+      color: var(--text);
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--green);
+    }
+
+    .hero-sub {
+      font-size: 1.1rem;
+      color: var(--muted);
+      max-width: 580px;
+      line-height: 1.8;
+      margin-bottom: 2.5rem;
+    }
+
+    .hero-actions {
+      display: flex; gap: 0.75rem; flex-wrap: wrap;
+    }
+
+    .hero-metrics {
+      display: flex; gap: 3rem; flex-wrap: wrap;
+      margin-top: 4rem;
+      padding-top: 3rem;
+      border-top: 1px solid var(--border2);
+    }
+
+    .metric-value {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 2.4rem;
+      color: var(--text);
+      line-height: 1;
+      margin-bottom: 0.25rem;
+    }
+    .metric-label { font-size: 0.8rem; color: var(--muted); }
+
+    /* ── Credentials strip ────────────────────────────────── */
+    #credentials {
+      padding: 2.25rem 0;
+      border-bottom: 1px solid var(--border2);
+      background: var(--bg2);
+    }
+
+    .credentials-inner {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      flex-wrap: wrap;
+    }
+
+    .credentials-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-right: 2.5rem;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .credentials-list {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      flex-wrap: wrap;
+      flex: 1;
+    }
+
+    .credential-item {
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+
+    .credential-name {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: rgba(21,21,21,0.35);
+      letter-spacing: -0.02em;
+      padding: 0 1.75rem;
+      transition: color 0.2s;
+      white-space: nowrap;
+    }
+
+    .credential-name:first-child { padding-left: 0; }
+
+    .credential-divider {
+      width: 1px;
+      height: 18px;
+      background: var(--border);
+      flex-shrink: 0;
+    }
+
+    .credential-divider:last-child { display: none; }
+
+    /* Hero right — profile card */
+    .hero-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2.25rem;
+      box-shadow: 0 2px 24px rgba(21,21,21,0.06);
+    }
+
+    .card-header {
+      display: flex; align-items: center; gap: 1rem;
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border2);
+    }
+
+    .avatar {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: var(--green);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 1.1rem;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .card-name { font-size: 0.95rem; font-weight: 600; }
+    .card-role { font-size: 0.78rem; color: var(--muted); margin-top: 0.1rem; }
+
+    .card-stat-row {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .card-stat {
+      background: var(--bg);
+      border: 1px solid var(--border2);
+      border-radius: 10px;
+      padding: 0.85rem 1rem;
+    }
+
+    .card-stat-val {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 1.25rem;
+      color: var(--green);
+      line-height: 1;
+      margin-bottom: 0.2rem;
+    }
+    .card-stat-lbl { font-size: 0.7rem; color: var(--muted); }
+
+    .card-tags {
+      display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1.25rem;
+    }
+
+    .tag {
+      padding: 0.22rem 0.65rem;
+      background: rgba(19,91,69,0.07);
+      border: 1px solid rgba(19,91,69,0.15);
+      border-radius: 100px;
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: var(--green);
+    }
+
+    /* ── Section header ───────────────────────────────────── */
+    .section-header {
+      margin-bottom: 3.5rem;
+    }
+
+    .section-eyebrow {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 0.75rem;
+    }
+
+    .section-header h2 {
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      color: var(--text);
+    }
+
+    .section-header p {
+      color: var(--muted);
+      margin-top: 0.6rem;
+      font-size: 0.97rem;
+      max-width: 520px;
+    }
+
+    /* ── About ────────────────────────────────────────────── */
+    #about {
+      padding: 7rem 0;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border2);
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 3fr 2fr;
+      gap: 5rem;
+      align-items: start;
+    }
+
+    .about-text h2 {
+      font-size: clamp(1.8rem, 3vw, 2.4rem);
+      margin-bottom: 1.75rem;
+    }
+
+    .about-text p {
+      color: var(--muted);
+      line-height: 1.9;
+      margin-bottom: 1.1rem;
+      font-size: 0.97rem;
+    }
+
+    .about-text p strong { color: var(--text); font-weight: 600; }
+
+    .about-aside { display: flex; flex-direction: column; gap: 0.75rem; }
+
+    .info-card {
+      background: var(--bg);
+      border: 1px solid var(--border2);
+      border-radius: 10px;
+      padding: 1.1rem 1.25rem;
+      transition: border-color 0.2s;
+    }
+    .info-card:hover { border-color: var(--border); }
+
+    .info-card-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin-bottom: 0.3rem;
+    }
+
+    .info-card-value {
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .edu-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      margin-top: 0.6rem;
+    }
+    .edu-item + .edu-item { margin-top: 0.9rem; }
+
+    .edu-badge {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+      letter-spacing: 0;
+    }
+
+    .edu-school {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.3;
+    }
+
+    .edu-degree {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 0.15rem;
+      line-height: 1.3;
+    }
+
+    /* ── Skills grid ──────────────────────────────────────── */
+    #skills {
+      padding: 7rem 0;
+      border-bottom: 1px solid var(--border2);
+    }
+
+    .skills-header {
+      text-align: center;
+      margin-bottom: 3.5rem;
+    }
+
+    .skills-header h2 { font-size: clamp(1.8rem, 3vw, 2.6rem); }
+
+    .skills-header p {
+      color: var(--muted);
+      font-size: 0.97rem;
+      margin-top: 0.6rem;
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+    }
+
+    .skill-card {
+      background: var(--bg2);
+      border: 1px solid var(--border2);
+      border-radius: 12px;
+      padding: 1.75rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .skill-card:hover {
+      border-color: rgba(19,91,69,0.2);
+      box-shadow: 0 2px 20px rgba(21,21,21,0.05);
+    }
+
+    .skill-icon {
+      width: 22px; height: 22px;
+      color: var(--green);
+      opacity: 0.75;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .skill-card h3 {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.97rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      margin-bottom: 0.6rem;
+    }
+
+    .skill-card p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 1.1rem;
+    }
+
+    .skill-tags {
+      display: flex; flex-wrap: wrap; gap: 0.35rem;
+    }
+
+    .skill-tag {
+      padding: 0.18rem 0.55rem;
+      background: rgba(19,91,69,0.06);
+      border: 1px solid rgba(19,91,69,0.12);
+      border-radius: 100px;
+      font-size: 0.68rem;
+      font-weight: 500;
+      color: var(--green);
+    }
+
+    /* ── Career Timeline ──────────────────────────────────── */
+    #career {
+      padding: 7rem 0;
+      background: var(--bg2);
+      border-top: 1px solid var(--border2);
+      border-bottom: 1px solid var(--border2);
+    }
+
+    .timeline {
+      max-width: 800px;
+      position: relative;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 10px; bottom: 0;
+      width: 1px;
+      background: var(--border);
+    }
+
+    .timeline-item {
+      position: relative;
+      padding: 0 0 3.5rem 2.25rem;
+    }
+    .timeline-item:last-child { padding-bottom: 0; }
+
+    .timeline-dot {
+      position: absolute;
+      left: -4px; top: 10px;
+      width: 9px; height: 9px;
+      border-radius: 50%;
+      background: var(--green);
+      border: 2px solid var(--bg2);
+    }
+
+    .timeline-period {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 0.3rem;
+    }
+
+    .timeline-role {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 1.2rem;
+      color: var(--text);
+      margin-bottom: 0.15rem;
+    }
+
+    .timeline-company {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 0.9rem;
+    }
+
+    .timeline-body {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.8;
+      margin-bottom: 1rem;
+      max-width: 640px;
+    }
+    .timeline-body strong { color: var(--text); font-weight: 600; }
+
+    .timeline-metrics {
+      display: flex; flex-wrap: wrap; gap: 0.5rem;
+    }
+
+    .metric-chip {
+      padding: 0.22rem 0.65rem;
+      background: rgba(19,91,69,0.06);
+      border: 1px solid rgba(19,91,69,0.15);
+      border-radius: 100px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--green);
+    }
+
+    /* ── Writing ──────────────────────────────────────────── */
+    #writing {
+      padding: 7rem 0;
+      border-bottom: 1px solid var(--border2);
+    }
+
+    .writing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+      margin-top: 0.5rem;
+    }
+
+    .writing-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .writing-card:hover {
+      border-color: rgba(19,91,69,0.3);
+      box-shadow: 0 4px 32px rgba(21,21,21,0.08);
+    }
+
+    .writing-card.featured {
+      grid-column: span 3;
+      background: linear-gradient(135deg, var(--bg2) 0%, #faf8f2 100%);
+      padding: 2.75rem;
+    }
+
+    .writing-card.featured::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--green);
+    }
+
+    .writing-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.1rem;
+    }
+
+    .writing-tag {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--green);
+    }
+
+    .writing-dot {
+      width: 3px; height: 3px;
+      border-radius: 50%;
+      background: var(--border);
+    }
+
+    .writing-readtime {
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    .writing-card h3 {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 1.35rem;
+      line-height: 1.2;
+      color: var(--text);
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.01em;
+    }
+
+    .writing-card.featured h3 {
+      font-size: clamp(1.6rem, 2.6vw, 2.2rem);
+      margin-bottom: 1rem;
+      max-width: 720px;
+    }
+
+    .writing-card p {
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.75;
+      margin-bottom: 1.5rem;
+      flex: 1;
+    }
+
+    .writing-card.featured p {
+      font-size: 1rem;
+      line-height: 1.8;
+      max-width: 640px;
+    }
+
+    .writing-pullquote {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-style: italic;
+      font-size: 1.1rem;
+      line-height: 1.5;
+      color: var(--green);
+      padding-left: 1rem;
+      border-left: 2px solid var(--green);
+      margin: 1.25rem 0 1.5rem;
+      max-width: 600px;
+    }
+
+    .writing-link {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--green);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      transition: gap 0.15s;
+      margin-top: auto;
+    }
+    .writing-link:hover { gap: 0.55rem; }
+
+    /* ── Projects ─────────────────────────────────────────── */
+    #projects {
+      padding: 7rem 0;
+      border-bottom: 1px solid var(--border2);
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+
+    .project-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 2.25rem;
+      transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+    .project-card:hover {
+      border-color: rgba(19,91,69,0.3);
+      box-shadow: 0 4px 32px rgba(21,21,21,0.08);
+    }
+
+    .project-card.featured {
+      grid-column: span 2;
+      background: linear-gradient(135deg, var(--bg2) 0%, #faf8f2 100%);
+      padding: 2.75rem;
+    }
+    .project-card.featured::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--green);
+    }
+    .project-card.featured h3 {
+      font-size: clamp(1.55rem, 2.4vw, 2rem);
+      max-width: 720px;
+    }
+    .project-card.featured p {
+      font-size: 0.97rem;
+      line-height: 1.85;
+      max-width: 720px;
+    }
+
+    .project-tag {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 0.9rem;
+    }
+
+    .project-card h3 {
+      font-size: 1.35rem;
+      margin-bottom: 0.75rem;
+      color: var(--text);
+    }
+
+    .project-card p {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.8;
+      margin-bottom: 1.75rem;
+      flex: 1;
+    }
+
+    .project-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--border2);
+      gap: 1rem;
+    }
+
+    .project-chips {
+      display: flex; flex-wrap: wrap; gap: 0.35rem;
+    }
+
+    .project-chip {
+      padding: 0.2rem 0.55rem;
+      background: rgba(19,91,69,0.07);
+      border: 1px solid rgba(19,91,69,0.12);
+      border-radius: 100px;
+      font-size: 0.7rem;
+      color: var(--green);
+    }
+
+    .project-link {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--green);
+      display: flex; align-items: center; gap: 0.3rem;
+      white-space: nowrap;
+      transition: gap 0.15s;
+    }
+    .project-link:hover { gap: 0.5rem; }
+
+    /* ── Contact ──────────────────────────────────────────── */
+    #contact {
+      padding: 7rem 0;
+      background: var(--bg2);
+    }
+
+    .contact-inner {
+      max-width: 580px;
+    }
+
+    .contact-inner h2 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      margin-bottom: 1rem;
+      line-height: 1.15;
+    }
+
+    .contact-inner h2 em { color: var(--green); }
+
+    .contact-inner p {
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.8;
+      margin-bottom: 2rem;
+    }
+
+    .contact-actions {
+      display: flex; gap: 0.75rem; flex-wrap: wrap;
+      margin-bottom: 2.5rem;
+    }
+
+    .contact-links {
+      display: flex; gap: 2rem; flex-wrap: wrap;
+    }
+
+    .contact-link {
+      display: flex; align-items: center; gap: 0.45rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+      transition: color 0.2s;
+    }
+    .contact-link:hover { color: var(--text); }
+    .contact-link svg { width: 15px; height: 15px; fill: currentColor; flex-shrink: 0; }
+
+    /* ── Footer ───────────────────────────────────────────── */
+    footer {
+      padding: 1.5rem 3rem;
+      border-top: 1px solid var(--border2);
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    /* ── Responsive ───────────────────────────────────────── */
+    @media (max-width: 860px) {
+      .container { padding: 0 1.5rem; }
+      nav { padding: 0 1.5rem; }
+      .hero-inner { grid-template-columns: 1fr; gap: 3rem; }
+      .hero-quote { display: none; }
+      .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      .nav-links { display: none; }
+      .hero-metrics { flex-wrap: wrap; gap: 1.5rem; }
+      .skills-grid { grid-template-columns: 1fr 1fr; }
+      .writing-grid { grid-template-columns: 1fr; }
+      .writing-card.featured { grid-column: span 1; padding: 2rem; }
+      .writing-card.featured h3 { font-size: 1.5rem; }
+      .projects-grid { grid-template-columns: 1fr; }
+      .project-card.featured { grid-column: span 1; padding: 2rem; }
+      .project-card.featured h3 { font-size: 1.5rem; }
+      footer { padding: 1.5rem; }
+    }
+
+    @media (max-width: 540px) {
+      .skills-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="scroll-progress"></div>
+
+<!-- ── Nav ────────────────────────────────────────────────── -->
+<nav>
+  <div class="nav-logo">Adam Genn</div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#career">Career</a></li>
+    <li><a href="#writing">Writing</a></li>
+    <li><a href="#projects">Work</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="mailto:a6enn95@gmail.com" class="nav-cta">Let's Talk</a>
+</nav>
+
+<!-- ── Hero ───────────────────────────────────────────────── -->
+<section id="hero">
+  <div class="container">
+    <div class="hero-inner">
+
+      <div class="hero-left">
+        <h1 class="hero-title fade-up">
+          GTM Builder.<br>
+          <em>AI Native.</em><br>
+          Operator.
+        </h1>
+        <p class="hero-sub fade-up">
+          9 years across consulting, enterprise accounts, and AI startups — turning problems into systems, not just strategies. The prospecting workflow on this page isn't a case study. It's what runs my territory.
+        </p>
+        <div class="hero-actions fade-up">
+          <a href="#projects" class="btn-primary">See My Work</a>
+          <a href="https://www.linkedin.com/in/adamgenn/" target="_blank" class="btn-outline">LinkedIn</a>
+        </div>
+        <div class="hero-metrics fade-up">
+          <div>
+            <div class="metric-value" data-prefix="$" data-target="3.7" data-suffix="M+">$3.7M+</div>
+            <div class="metric-label">Pipeline Built</div>
+          </div>
+          <div>
+            <div class="metric-value" data-prefix="$" data-target="200" data-suffix="M+">$200M+</div>
+            <div class="metric-label">Portfolio Managed</div>
+          </div>
+          <div>
+            <div class="metric-value" data-prefix="$" data-target="1" data-suffix="B+">$1B+</div>
+            <div class="metric-label">M&A Supported</div>
+          </div>
+          <div>
+            <div class="metric-value" data-prefix="" data-target="9" data-suffix="+">9+</div>
+            <div class="metric-label">Years Experience</div>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+</section>
+
+<!-- ── About ──────────────────────────────────────────────── -->
+<section id="about">
+  <div class="container">
+    <div class="about-grid">
+
+      <div class="about-text fade-up">
+        <h2>Builder. Operator.</h2>
+        <p>
+          I've never been the person in the room who says "someone should build that." I'm the person who goes home and builds it.
+        </p>
+        <p>
+          That instinct showed up early. Consulting gave me the foundation — financial modeling at Deloitte, digital transformation at Capco, a $200M account turnaround at Cognizant. I learned how to diagnose complex problems, communicate at the executive level, and operate inside organizations where the stakes are real. But I was always more interested in what happened after the diagnosis. Who was going to fix it? How?
+        </p>
+        <p>
+          The answer got sharper when I joined Arteria as the first NYC GTM hire. No inherited relationships, no motion, no playbook. Just a mandate to build pipeline at a company most of the market had never heard of. I didn't wait for someone to hand me a system. I built one — pulling tools together, engineering sequences, testing and iterating until it worked. Somewhere in that process I realized I'd stumbled into a new kind of skill: GTM engineering. I didn't know it had a name. I just knew I needed to solve the problem.
+        </p>
+        <p>
+          That's the through-line. Every role, every company, every problem — <strong>I find the gap and build the thing.</strong> The prospecting workflow on this page isn't a case study. It's live, and it's what runs my territory. I'm not learning to work with AI. I built around it.
+        </p>
+      </div>
+
+      <div class="about-aside">
+        <div class="info-card fade-up">
+          <div class="info-card-label">Location</div>
+          <div class="info-card-value">New York, NY</div>
+        </div>
+        <div class="info-card fade-up">
+          <div class="info-card-label">Education</div>
+          <div class="edu-item">
+            <div class="edu-badge" style="background:#011F5B;">W</div>
+            <div>
+              <div class="edu-school">Wharton · University of Pennsylvania</div>
+              <div class="edu-degree">AI for Business Specialization</div>
+            </div>
+          </div>
+          <div class="edu-item">
+            <div class="edu-badge" style="background:#792434;">F</div>
+            <div>
+              <div class="edu-school">Fordham University · Gabelli</div>
+              <div class="edu-degree">BA Business Admin &amp; Finance · Magna Cum Laude</div>
+            </div>
+          </div>
+        </div>
+        <div class="info-card fade-up">
+          <div class="info-card-label">Certifications</div>
+          <div class="info-card-value">Google AI Essentials · MS Copilot Sales Champion · Google Data Analytics</div>
+        </div>
+        <div class="info-card fade-up">
+          <div class="info-card-label">Clay GTM Engineering · 2026</div>
+          <div class="info-card-value">Competitive cohort for operators building GTM systems with AI. Selected from 2,000+ applicants.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── Skills ──────────────────────────────────────────────── -->
+<section id="skills">
+  <div class="container">
+    <div class="skills-header fade-up">
+      <div class="section-eyebrow">Capabilities</div>
+      <h2>How I operate.</h2>
+      <p>Strategy is table stakes. What matters is whether it ships.</p>
+    </div>
+
+    <div class="skills-grid">
+
+      <div class="skill-card fade-up">
+        <svg class="skill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="3" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="21"/><line x1="3" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="21" y2="12"/></svg>
+        <h3>GTM Strategy</h3>
+        <p>End-to-end go-to-market design — ICP definition, segmentation, messaging, and channel strategy that drives pipeline with precision.</p>
+        <div class="skill-tags">
+          <span class="skill-tag">ICP / Segmentation</span>
+          <span class="skill-tag">Messaging Framework</span>
+          <span class="skill-tag">Market Entry</span>
+          <span class="skill-tag">Pricing Strategy</span>
+          <span class="skill-tag">Competitive Intel</span>
+        </div>
+      </div>
+
+      <div class="skill-card fade-up">
+        <svg class="skill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+        <h3>Solution Engineering</h3>
+        <p>Translating technical capability into business outcomes — from discovery to demo to custom POC design that de-risks decisions.</p>
+        <div class="skill-tags">
+          <span class="skill-tag">Technical Discovery</span>
+          <span class="skill-tag">POC / Pilot Design</span>
+          <span class="skill-tag">Demo Engineering</span>
+          <span class="skill-tag">RFP Responses</span>
+        </div>
+      </div>
+
+      <div class="skill-card fade-up">
+        <svg class="skill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <h3>Relationship Management</h3>
+        <p>Customers aren't accounts — they're people with problems worth solving. I go to bat for the people I work with and stay relentlessly focused on making their lives easier, not just renewing their contract.</p>
+        <div class="skill-tags">
+          <span class="skill-tag">Customer Success</span>
+          <span class="skill-tag">Executive Relationships</span>
+          <span class="skill-tag">Retention & Expansion</span>
+          <span class="skill-tag">Stakeholder Management</span>
+        </div>
+      </div>
+
+      <div class="skill-card fade-up">
+        <svg class="skill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        <h3>Sales Enablement</h3>
+        <p>Arming revenue teams with the playbooks, tools, and training they need to engage buyers confidently and close more consistently.</p>
+        <div class="skill-tags">
+          <span class="skill-tag">Playbook Creation</span>
+          <span class="skill-tag">Battle Cards</span>
+          <span class="skill-tag">Onboarding</span>
+          <span class="skill-tag">Sales Training</span>
+        </div>
+      </div>
+
+      <div class="skill-card fade-up">
+        <svg class="skill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+        <h3>Revenue Operations</h3>
+        <p>Data-driven process design for predictable revenue — pipeline hygiene, forecasting rigor, and tech stack optimization.</p>
+        <div class="skill-tags">
+          <span class="skill-tag">Salesforce</span>
+          <span class="skill-tag">HubSpot</span>
+          <span class="skill-tag">Forecasting</span>
+          <span class="skill-tag">Pipeline Management</span>
+          <span class="skill-tag">CRM Hygiene</span>
+        </div>
+      </div>
+
+      <div class="skill-card fade-up">
+        <svg class="skill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        <h3>Tools &amp; Platforms</h3>
+        <p>Comfortable across the modern GTM stack — from CRM to analytics, automation, and collaboration tools that accelerate execution.</p>
+        <div class="skill-tags">
+          <span class="skill-tag">Outreach / Salesloft</span>
+          <span class="skill-tag">Gong</span>
+          <span class="skill-tag">ZoomInfo</span>
+          <span class="skill-tag">Tableau</span>
+          <span class="skill-tag">Marketo</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── Career ──────────────────────────────────────────────── -->
+<section id="career">
+  <div class="container">
+    <div class="section-header fade-up">
+      <div class="section-eyebrow">Experience</div>
+      <h2>Where I've been.</h2>
+      <p>A decade across consulting, enterprise accounts, and AI startups.</p>
+    </div>
+
+    <div class="timeline">
+
+      <div class="timeline-item fade-up">
+        <div class="timeline-dot"></div>
+        <div class="timeline-period">Jan 2025 – Present</div>
+        <div class="timeline-role">Arteria AI</div>
+        <div class="timeline-company">GTM, Account Executive &amp; Growth · New York</div>
+        <div class="timeline-body">
+          First NYC hire at a Series B AI documentation platform for global financial institutions. There was no playbook — so I wrote one. Built the commercial foundation from scratch — ICP frameworks, demo flows, ROI narratives, competitive positioning — while simultaneously running new logo hunting as an AE. <strong>Architected a SIFMA-aligned Treasury Clearing GTM motion from first narrative through demos and pilot definitions.</strong>
+        </div>
+        <div class="timeline-metrics">
+          <span class="metric-chip">$3.7M+ pipeline built</span>
+          <span class="metric-chip">5x JPMorgan pipeline growth</span>
+          <span class="metric-chip">SIFMA partnership</span>
+        </div>
+      </div>
+
+      <div class="timeline-item fade-up">
+        <div class="timeline-dot"></div>
+        <div class="timeline-period">Mar 2021 – Jan 2025</div>
+        <div class="timeline-role">Cognizant</div>
+        <div class="timeline-company">Senior Account Manager, JPMorgan · New York</div>
+        <div class="timeline-body">
+          Recruited to help rescue Cognizant's largest account — a relationship on the brink of being lost. Ran dual responsibilities: portfolio strategy and operations across a $200M+ relationship, plus independent P&amp;L ownership for the asset and wealth management line of business. <strong>Grew the portfolio from $100M to $200M+ and drove 20% YoY revenue growth</strong> by diagnosing execution gaps and rebuilding the operating model. You can't just diagnose the problem — you have to own the fix.
+        </div>
+        <div class="timeline-metrics">
+          <span class="metric-chip">$32M P&L (from $18M)</span>
+          <span class="metric-chip">$200M+ portfolio</span>
+          <span class="metric-chip">20% YoY growth</span>
+          <span class="metric-chip">50+ programs</span>
+        </div>
+      </div>
+
+      <div class="timeline-item fade-up">
+        <div class="timeline-dot"></div>
+        <div class="timeline-period">Sep 2019 – Mar 2021</div>
+        <div class="timeline-role">Capco</div>
+        <div class="timeline-company">Digital Strategy Consultant · New York</div>
+        <div class="timeline-body">
+          Digital transformation advisory for banking, wealth management, and private equity clients. Led strategy and implementation of a digital wealth platform. Launched the PE practice from scratch. <strong>Got serious about AI here</strong> — working on AI-driven underwriting and advisor workflow automation before it was a mainstream conversation.
+        </div>
+        <div class="timeline-metrics">
+          <span class="metric-chip">50% time-to-sale reduction</span>
+          <span class="metric-chip">35% engagement improvement</span>
+          <span class="metric-chip">$3M pipeline generated</span>
+        </div>
+      </div>
+
+      <div class="timeline-item fade-up">
+        <div class="timeline-dot"></div>
+        <div class="timeline-period">Jul 2017 – Aug 2019</div>
+        <div class="timeline-role">Deloitte Consulting</div>
+        <div class="timeline-company">Strategy Consultant · New York</div>
+        <div class="timeline-body">
+          M&amp;A strategy and human capital consulting. This is where I learned to think — how to take messy data and turn it into clear decisions that held up in front of CFOs and board members. Built the analytical foundation that everything since has been built on.
+        </div>
+        <div class="timeline-metrics">
+          <span class="metric-chip">$1B+ M&A supported</span>
+          <span class="metric-chip">$1.34B integration</span>
+          <span class="metric-chip">Deloitte Academy chair</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── Writing ──────────────────────────────────────────────── -->
+<section id="writing">
+  <div class="container">
+    <div class="section-header fade-up">
+      <div class="section-eyebrow">Writing</div>
+      <h2>How I think about the work.</h2>
+      <p>Working notes on AI, system design, and the engineering layer underneath GTM.</p>
+    </div>
+
+    <div class="writing-grid">
+
+      <a href="skill-architecture.html" class="writing-card featured fade-up">
+        <div class="writing-meta">
+          <span class="writing-tag">Featured Essay · Skills &amp; AI</span>
+          <span class="writing-dot"></span>
+          <span class="writing-readtime">5 min read</span>
+        </div>
+        <h3>The Right Skill Architecture Compounds. The Wrong One Collapses.</h3>
+        <p>
+          My first AI skill tried to do everything — ICP scoring, research, prospect ID, outreach. All in one. The output was a mess. The problem wasn't the prompting. It was the architecture.
+        </p>
+        <div class="writing-pullquote">
+          One skill should do one type of thinking. Not one task.
+        </div>
+        <span class="writing-link">Read the essay →</span>
+      </a>
+
+      <a href="model-selection.html" class="writing-card fade-up">
+        <div class="writing-meta">
+          <span class="writing-tag">Essay · AI Architecture</span>
+          <span class="writing-dot"></span>
+          <span class="writing-readtime">5 min</span>
+        </div>
+        <h3>Model Selection Is an Architecture Decision.</h3>
+        <p>
+          A conflict-detection column was returning false negatives on real conflicts. The prompt was right. The model was wrong. The question isn't "what prompt do I write." It's what type of thinking the task requires — and which model is built for that type of thinking.
+        </p>
+        <span class="writing-link">Read the essay →</span>
+      </a>
+
+      <a href="post-meeting-tax.html" class="writing-card fade-up">
+        <div class="writing-meta">
+          <span class="writing-tag">Essay · Sales Systems</span>
+          <span class="writing-dot"></span>
+          <span class="writing-readtime">4 min</span>
+        </div>
+        <h3>The Post-Meeting Tax Every Sales Rep Pays.</h3>
+        <p>
+          After every meeting, a rep owes four things to four different places. Most do one or two. Almost none do all four fast enough. Nobody treats this as a systems problem — and that's exactly why it stays broken.
+        </p>
+        <span class="writing-link">Read the essay →</span>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── Projects ────────────────────────────────────────────── -->
+<section id="projects">
+  <div class="container">
+    <div class="section-header fade-up">
+      <div class="section-eyebrow">Selected Builds</div>
+      <h2>Built, not described.</h2>
+      <p>Working systems I've designed and shipped — each one a complete answer to a real GTM problem.</p>
+    </div>
+
+    <div class="projects-grid">
+
+      <a href="prospecting.html" class="project-card featured fade-up">
+        <div class="project-tag">Production System · Arteria AI</div>
+        <h3>An AI Prospecting Workflow That Replaced Two Days of Research</h3>
+        <p>
+          Two days of research per cohort, every week. I rebuilt it as a Python pipeline on the Claude API: ingest a firm list, score each one against a 25-point ICP framework, kill the misfits before they burn enrichment credits, surface the right decision-maker, and draft a personalized four-beat outreach email per contact. <strong>The motion that runs my territory now is the system I built around it.</strong>
+        </p>
+        <div class="project-footer">
+          <div class="project-chips">
+            <span class="project-chip">Python</span>
+            <span class="project-chip">Claude API</span>
+            <span class="project-chip">FinServ ICP</span>
+            <span class="project-chip">Outbound Automation</span>
+          </div>
+          <span class="project-link">See the build →</span>
+        </div>
+      </a>
+
+      <a href="clay-private-equity.html" class="project-card fade-up">
+        <div class="project-tag">GTM Engineering · Clay</div>
+        <h3>Selling Clay Into a Vertical It Hasn't Touched</h3>
+        <p>
+          PE deal sourcing is the same motion as B2B prospecting — Clay's product already supports it. I used EDGAR filings to route around the locked-down PitchBook data layer, segmented the market into three distinct sourcing motions, and built a deterministic email engine that personalizes 63 ways without burning a single AI credit.
+        </p>
+        <div class="project-footer">
+          <div class="project-chips">
+            <span class="project-chip">Clay</span>
+            <span class="project-chip">EDGAR API</span>
+            <span class="project-chip">Segmentation</span>
+          </div>
+          <span class="project-link">See the build →</span>
+        </div>
+      </a>
+
+      <a href="highbeam-signals.html" class="project-card fade-up">
+        <div class="project-tag">Signal Engineering · Highbeam</div>
+        <h3>The Signal Stack — Timing Beats Fit</h3>
+        <p>
+          Most prospect lists tell you which companies <em>could</em> buy. This one tells you which ones are sitting on a live decision window. Three weighted signals — first finance hires, active paid ad spend, payment tool sprawl — scored, tiered, and designed to compound as new accounts come in. Built for a consumer fintech selling into founder-led brands.
+        </p>
+        <div class="project-footer">
+          <div class="project-chips">
+            <span class="project-chip">Clay</span>
+            <span class="project-chip">Claygent</span>
+            <span class="project-chip">BuiltWith</span>
+          </div>
+          <span class="project-link">See the build →</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── Contact ─────────────────────────────────────────────── -->
+<section id="contact">
+  <div class="container">
+    <div class="contact-inner fade-up">
+      <div class="section-eyebrow">Let's connect</div>
+      <h2>Have something<br><em>worth building?</em></h2>
+      <p>
+        Whether you're a hiring manager, a peer, or just someone who found this page and wants to think through a problem — I'd love to hear what you're working on.
+      </p>
+      <div class="contact-actions">
+        <a href="mailto:a6enn95@gmail.com" class="btn-primary">Send an Email</a>
+        <a href="https://www.linkedin.com/in/adamgenn/" target="_blank" class="btn-outline">View LinkedIn</a>
+      </div>
+      <div class="contact-links">
+        <a href="mailto:a6enn95@gmail.com" class="contact-link">
+          <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+          a6enn95@gmail.com
+        </a>
+        <a href="https://www.linkedin.com/in/adamgenn/" target="_blank" class="contact-link">
+          <svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          LinkedIn
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Footer ──────────────────────────────────────────────── -->
+<footer>
+  <span>© 2026 Adam Genn</span>
+  <span>Built with Claude. Because that's the point.</span>
+</footer>
+
+<script>
+  history.scrollRestoration = 'manual';
+  window.scrollTo(0, 0);
+
+  // ── Scroll progress bar ──────────────────────────────────
+  const progressBar = document.getElementById('scroll-progress');
+  function updateProgress() {
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    progressBar.style.width = (max > 0 ? (window.scrollY / max) * 100 : 0) + '%';
+  }
+
+  // ── Fade-up observer ─────────────────────────────────────
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        const siblings = entry.target.parentElement.querySelectorAll('.fade-up');
+        siblings.forEach((el, idx) => {
+          setTimeout(() => el.classList.add('visible'), idx * 80);
+        });
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  // ── Metric counter animation ─────────────────────────────
+  const counterObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const el = entry.target;
+      const target = parseFloat(el.dataset.target);
+      const prefix = el.dataset.prefix;
+      const suffix = el.dataset.suffix;
+      const isDecimal = target % 1 !== 0;
+      const duration = 1400;
+      const startTime = performance.now();
+
+      function tick(now) {
+        const p = Math.min((now - startTime) / duration, 1);
+        const eased = 1 - Math.pow(1 - p, 3);
+        const val = target * eased;
+        el.textContent = prefix + (isDecimal ? val.toFixed(1) : Math.floor(val)) + suffix;
+        if (p < 1) requestAnimationFrame(tick);
+        else el.textContent = prefix + (isDecimal ? target.toFixed(1) : target) + suffix;
+      }
+      requestAnimationFrame(tick);
+      counterObserver.unobserve(el);
+    });
+  }, { threshold: 0.5 });
+
+  document.querySelectorAll('.metric-value[data-target]').forEach(el => counterObserver.observe(el));
+
+  // ── Card tilt ────────────────────────────────────────────
+  document.querySelectorAll('.writing-card, .project-card').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const r = card.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - 0.5;
+      const y = (e.clientY - r.top) / r.height - 0.5;
+      card.style.transition = 'border-color 0.2s, box-shadow 0.2s';
+      card.style.transform = `perspective(700px) rotateX(${-y * 5}deg) rotateY(${x * 5}deg) translateY(-3px)`;
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.transition = 'transform 0.45s ease, border-color 0.2s, box-shadow 0.2s';
+      card.style.transform = '';
+    });
+  });
+
+  // ── Nav active + scroll progress ─────────────────────────
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+
+  window.addEventListener('scroll', () => {
+    updateProgress();
+    let current = '';
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 80) current = s.id;
+    });
+    navLinks.forEach(a => {
+      a.style.color = a.getAttribute('href') === `#${current}` ? 'var(--green)' : '';
+    });
+  }, { passive: true });
+</script>
+</body>
+</html>

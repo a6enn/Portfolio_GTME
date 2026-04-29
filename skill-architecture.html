@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Right Skill Architecture Compounds — Adam Genn</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #f5f2eb;
+      --bg2:       #ffffff;
+      --bg3:       #ede9df;
+      --border:    rgba(21,21,21,0.1);
+      --border2:   rgba(21,21,21,0.06);
+      --green:     #135b45;
+      --green-mid: #1a7a5e;
+      --text:      #151515;
+      --muted:     #737373;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', system-ui, sans-serif;
+      line-height: 1.75;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    h1, h2, h3 { font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; letter-spacing: -0.01em; }
+    a { color: inherit; text-decoration: none; }
+
+    .fade-up { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: 60px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 3rem;
+      background: rgba(245,242,235,0.9);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border2);
+    }
+
+    .nav-logo {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 1.2rem;
+      letter-spacing: -0.02em;
+    }
+
+    .nav-back {
+      display: flex; align-items: center; gap: 0.4rem;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--muted);
+      transition: color 0.2s;
+    }
+    .nav-back:hover { color: var(--text); }
+
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 3rem;
+    }
+
+    .container-wide {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 3rem;
+    }
+
+    .btn-primary {
+      display: inline-block;
+      padding: 0.7rem 1.6rem;
+      background: var(--green);
+      color: #fff;
+      border-radius: 6px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      transition: background 0.2s, transform 0.15s;
+      margin-right: 0.5rem;
+    }
+    .btn-primary:hover { background: var(--green-mid); transform: translateY(-1px); }
+
+    .btn-outline {
+      display: inline-block;
+      padding: 0.7rem 1.6rem;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 6px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-outline:hover { border-color: var(--text); color: var(--text); }
+
+    /* Hero */
+    .page-hero {
+      padding: 130px 0 60px;
+      border-bottom: 1px solid var(--border2);
+    }
+
+    .hero-eyebrow {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 1.5rem;
+    }
+
+    .page-hero h1 {
+      font-size: clamp(2.4rem, 5vw, 3.6rem);
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      letter-spacing: -0.015em;
+    }
+
+    .page-hero h1 em { color: var(--green); font-style: italic; }
+
+    .deck {
+      font-size: 1.18rem;
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 600px;
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+
+    .hero-meta {
+      display: flex; gap: 2.5rem; flex-wrap: wrap;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border2);
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+    .hero-meta strong { color: var(--text); font-weight: 600; }
+
+    /* Article */
+    article {
+      padding: 5rem 0 2rem;
+    }
+
+    article p {
+      font-size: 1.02rem;
+      line-height: 1.85;
+      color: #2a2a2a;
+      margin-bottom: 1.4rem;
+    }
+
+    article p strong { color: var(--text); font-weight: 600; }
+    article p em { color: var(--text); font-style: italic; }
+
+    article h2 {
+      font-size: 1.75rem;
+      margin-top: 3.5rem;
+      margin-bottom: 1.25rem;
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+
+    article h3 {
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      margin-top: 2rem;
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+
+    article hr {
+      border: 0;
+      border-top: 1px solid var(--border2);
+      margin: 3rem 0;
+    }
+
+    .lede::first-letter {
+      font-family: 'Instrument Serif', Georgia, serif;
+      float: left;
+      font-size: 3.6rem;
+      line-height: 0.95;
+      color: var(--green);
+      padding: 0.35rem 0.6rem 0 0;
+      font-weight: 400;
+    }
+
+    .pullquote {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-style: italic;
+      font-size: 1.55rem;
+      line-height: 1.4;
+      color: var(--green);
+      border-left: 3px solid var(--green);
+      padding: 0.5rem 0 0.5rem 1.5rem;
+      margin: 2.5rem 0;
+      max-width: 600px;
+      letter-spacing: -0.005em;
+    }
+
+    .callout {
+      background: var(--bg2);
+      border: 1px solid var(--border2);
+      border-radius: 12px;
+      padding: 1.75rem 2rem;
+      margin: 2rem 0;
+    }
+
+    .callout-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 0.6rem;
+    }
+
+    .callout p { margin-bottom: 0.8rem; }
+    .callout p:last-child { margin-bottom: 0; }
+
+    .diagram {
+      background: var(--bg2);
+      border: 1px solid var(--border2);
+      border-radius: 12px;
+      padding: 1.75rem 1.5rem 1.25rem;
+      margin: 2rem 0 2.5rem;
+    }
+    .diagram svg { width: 100%; height: auto; display: block; }
+    .diagram-caption {
+      font-size: 0.78rem; color: var(--muted);
+      text-align: center; margin-top: 0.9rem;
+      font-style: italic;
+    }
+
+    /* Closing */
+    .closing-section {
+      background: var(--bg2);
+      border-top: 1px solid var(--border2);
+      padding: 5rem 0;
+      text-align: center;
+    }
+
+    .closing-section h2 {
+      font-size: clamp(1.8rem, 3vw, 2.4rem);
+      margin-bottom: 1rem;
+    }
+
+    .closing-section h2 em { color: var(--green); font-style: italic; }
+
+    .closing-section p {
+      color: var(--muted);
+      font-size: 1rem;
+      max-width: 480px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.8;
+    }
+
+    footer {
+      padding: 1.5rem 3rem;
+      border-top: 1px solid var(--border2);
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    @media (max-width: 768px) {
+      .container, .container-wide { padding: 0 1.5rem; }
+      nav { padding: 0 1.5rem; }
+      footer { padding: 1.5rem; }
+      article p { font-size: 0.97rem; }
+      .pullquote { font-size: 1.25rem; margin: 1.75rem 0; padding-left: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Adam Genn</div>
+  <a href="index.html#writing" class="nav-back">← Back to portfolio</a>
+</nav>
+
+<div class="page-hero">
+  <div class="container fade-up">
+    <div class="hero-eyebrow">Essay · Skills &amp; AI Architecture</div>
+    <h1>The Right Skill Architecture Compounds.<br><em>The Wrong One Collapses.</em></h1>
+    <p class="deck">
+      Most people treat prompts like instructions. The real leverage shows up when you treat them like programs — and stop building one skill that tries to do everything.
+    </p>
+    <div class="hero-meta">
+      <span><strong>Subject</strong> Skill design as program design</span>
+      <span><strong>Read time</strong> 5 min</span>
+    </div>
+  </div>
+</div>
+
+<article>
+  <div class="container fade-up">
+    <p class="lede">
+      A skill is a saved program. It captures your process, your standards, and your context once — so the model doesn't make you rebuild it from scratch every time.
+    </p>
+    <p>
+      The leverage isn't the AI getting smarter. <strong>It's you getting better at externalizing your thinking into something reusable.</strong>
+    </p>
+
+    <h2>Treat a Prompt Like a Program</h2>
+    <p>
+      A prompt has inputs, logic, and expected outputs. When you write a skill, you're defining a standard for how a type of work gets done. The more precise the skill, the less variation in the output. The less variation, the more you can build on top of it.
+    </p>
+
+    <h2>I Tried to Do It All in One Skill</h2>
+    <p>
+      My first prospecting skill did everything: ICP scoring, company research, prospect identification, personalized outreach. One skill, one workflow. That's how a manager thinks about a task.
+    </p>
+    <p>
+      It's not how the best employees execute. A good employee breaks the ask down into smaller, sequenced pieces before doing anything. My monolithic skill was thinking like the manager. It needed to think like the employee.
+    </p>
+    <p>
+      The output was a mess. Hallucinations in the enrichment. Generic copy where there should have been specificity. <strong>The problem wasn't the prompting. It was the architecture.</strong>
+    </p>
+
+    <div class="diagram">
+      <svg viewBox="0 0 720 380" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Monolithic skill versus modular skill architecture">
+        <defs>
+          <marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#b91c1c" />
+          </marker>
+          <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#135b45" />
+          </marker>
+          <marker id="arr-mute" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#737373" />
+          </marker>
+        </defs>
+
+        <!-- LEFT: MONOLITHIC -->
+        <text x="20" y="22" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#b91c1c" letter-spacing="1.5">MONOLITHIC</text>
+        <text x="20" y="38" font-family="Instrument Serif, Georgia, serif" font-style="italic" font-size="13" fill="#737373">one skill tries to hold everything</text>
+
+        <!-- 4 different reasoning types stuffed into one big box -->
+        <rect x="20" y="55" width="300" height="200" rx="12" fill="#fff" stroke="#b91c1c" stroke-width="1.5" stroke-dasharray="4 3" />
+        <text x="170" y="80" font-family="Instrument Serif, Georgia, serif" font-size="16" fill="#151515" text-anchor="middle">"prospect everything" skill</text>
+
+        <g font-family="Inter, sans-serif" font-size="10.5" fill="#151515">
+          <rect x="38" y="100" width="124" height="32" rx="6" fill="#f5f2eb" stroke="rgba(21,21,21,0.1)" />
+          <text x="100" y="120" text-anchor="middle" font-weight="600">ICP scoring</text>
+
+          <rect x="178" y="100" width="124" height="32" rx="6" fill="#f5f2eb" stroke="rgba(21,21,21,0.1)" />
+          <text x="240" y="120" text-anchor="middle" font-weight="600">Company research</text>
+
+          <rect x="38" y="142" width="124" height="32" rx="6" fill="#f5f2eb" stroke="rgba(21,21,21,0.1)" />
+          <text x="100" y="162" text-anchor="middle" font-weight="600">Prospect ID</text>
+
+          <rect x="178" y="142" width="124" height="32" rx="6" fill="#f5f2eb" stroke="rgba(21,21,21,0.1)" />
+          <text x="240" y="162" text-anchor="middle" font-weight="600">Personalized copy</text>
+        </g>
+
+        <text x="170" y="200" font-family="Inter, sans-serif" font-size="10" fill="#737373" text-anchor="middle">all four competing for the same context window</text>
+
+        <!-- collision lines -->
+        <line x1="100" y1="180" x2="240" y2="220" stroke="#b91c1c" stroke-width="1" stroke-dasharray="2 2" opacity="0.6" />
+        <line x1="240" y1="180" x2="100" y2="220" stroke="#b91c1c" stroke-width="1" stroke-dasharray="2 2" opacity="0.6" />
+        <text x="170" y="240" font-family="Inter, sans-serif" font-size="10" fill="#b91c1c" text-anchor="middle" font-weight="600">→ drift, hallucination, generic output</text>
+
+        <!-- output bad -->
+        <line x1="170" y1="262" x2="170" y2="295" stroke="#b91c1c" stroke-width="1.5" marker-end="url(#arr-red)" />
+        <rect x="60" y="300" width="220" height="40" rx="8" fill="#fff" stroke="#b91c1c" />
+        <text x="170" y="320" font-family="Inter, sans-serif" font-size="11" font-weight="600" fill="#b91c1c" text-anchor="middle">unreliable, brittle to edit,</text>
+        <text x="170" y="334" font-family="Inter, sans-serif" font-size="11" font-weight="600" fill="#b91c1c" text-anchor="middle">grows sideways not upward</text>
+
+        <!-- divider -->
+        <line x1="360" y1="20" x2="360" y2="360" stroke="rgba(21,21,21,0.08)" stroke-dasharray="3 4" />
+
+        <!-- RIGHT: MODULAR -->
+        <text x="380" y="22" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#135b45" letter-spacing="1.5">MODULAR</text>
+        <text x="380" y="38" font-family="Instrument Serif, Georgia, serif" font-style="italic" font-size="13" fill="#737373">one skill, one type of thinking</text>
+
+        <!-- Orchestrator -->
+        <rect x="490" y="58" width="160" height="36" rx="8" fill="#135b45" />
+        <text x="570" y="81" font-family="Inter, sans-serif" font-size="11.5" font-weight="600" fill="#fff" text-anchor="middle">Orchestrator</text>
+
+        <!-- four focused skills -->
+        <g font-family="Inter, sans-serif" font-size="10.5" fill="#151515">
+          <rect x="380" y="115" width="150" height="40" rx="6" fill="#f5f2eb" stroke="#135b45" />
+          <text x="392" y="132" font-weight="600">ICP skill</text>
+          <text x="392" y="146" fill="#737373" font-size="9.5">pattern recognition</text>
+
+          <rect x="540" y="115" width="160" height="40" rx="6" fill="#f5f2eb" stroke="#135b45" />
+          <text x="552" y="132" font-weight="600">Research skill</text>
+          <text x="552" y="146" fill="#737373" font-size="9.5">synthesis</text>
+
+          <rect x="380" y="165" width="150" height="40" rx="6" fill="#f5f2eb" stroke="#135b45" />
+          <text x="392" y="182" font-weight="600">Prospecting skill</text>
+          <text x="392" y="196" fill="#737373" font-size="9.5">filtering</text>
+
+          <rect x="540" y="165" width="160" height="40" rx="6" fill="#f5f2eb" stroke="#135b45" />
+          <text x="552" y="182" font-weight="600">Outreach skill</text>
+          <text x="552" y="196" fill="#737373" font-size="9.5">creative generation</text>
+        </g>
+
+        <!-- arrows from orchestrator down -->
+        <line x1="455" y1="94" x2="455" y2="113" stroke="#135b45" stroke-width="1.2" marker-end="url(#arr-green)" />
+        <line x1="620" y1="94" x2="620" y2="113" stroke="#135b45" stroke-width="1.2" marker-end="url(#arr-green)" />
+        <line x1="455" y1="155" x2="455" y2="163" stroke="#135b45" stroke-width="1.2" marker-end="url(#arr-green)" />
+        <line x1="620" y1="155" x2="620" y2="163" stroke="#135b45" stroke-width="1.2" marker-end="url(#arr-green)" />
+
+        <!-- output good -->
+        <line x1="540" y1="220" x2="540" y2="245" stroke="#135b45" stroke-width="1.5" marker-end="url(#arr-green)" />
+        <rect x="400" y="250" width="280" height="44" rx="8" fill="#f5f2eb" stroke="#135b45" />
+        <text x="540" y="269" font-family="Inter, sans-serif" font-size="11" font-weight="600" fill="#135b45" text-anchor="middle">clean context per step,</text>
+        <text x="540" y="285" font-family="Inter, sans-serif" font-size="11" font-weight="600" fill="#135b45" text-anchor="middle">edit one without breaking the rest</text>
+
+        <!-- pyramid hint -->
+        <polygon points="540,310 470,358 610,358" fill="#f5f2eb" stroke="#135b45" stroke-width="1" />
+        <text x="540" y="345" font-family="Instrument Serif, Georgia, serif" font-style="italic" font-size="13" fill="#135b45" text-anchor="middle">compounds upward</text>
+      </svg>
+      <div class="diagram-caption">Different reasoning types → different skills. The orchestrator sequences them.</div>
+    </div>
+
+    <p>
+      ICP scoring is pattern recognition. Research is synthesis. Prospect ID is filtering. Outreach is creative generation. Four different types of reasoning, all competing for one context window. The model loses the thread. Hallucinations aren't random — they're what happens when you ask a model to hold too much at once.
+    </p>
+
+    <div class="pullquote">
+      One skill should do one type of thinking. Not one task.
+    </div>
+
+    <h2>Why the Architecture Matters</h2>
+
+    <h3>1. Context windows have walls.</h3>
+    <p>
+      When a monolithic skill runs out of room, it fills gaps by improvising. Smaller skills mean cleaner context, and cleaner context means outputs you can trust.
+    </p>
+
+    <h3>2. Monolithic skills are brittle to edit.</h3>
+    <p>
+      Update a large prompt and it changes things you didn't intend. A focused skill can be rewritten in isolation. You can improve outreach without risking research logic.
+    </p>
+
+    <h3>3. Compounding only works on a stable foundation.</h3>
+    <p>
+      Treat your library as a pyramid. The base layer is slow to build, but every layer above it goes faster because you're not starting over. A monolithic system grows sideways. A modular one grows up.
+    </p>
+
+    <h2>Match the Orchestration to the Scope</h2>
+    <p>
+      If the workflow lives entirely inside Claude, an orchestration skill is enough — one skill that sequences the others and passes context between them. If it crosses into Clay, Salesforce, or LinkedIn, that's where n8n or Zapier earns its keep. Don't over-engineer it.
+    </p>
+
+    <h2>What the Group Corrected in Me</h2>
+
+    <h3>Inference over trigger words.</h3>
+    <p>
+      I'd been writing skills with explicit trigger phrases — "Run the ICP skill." At five skills, that's manageable. At twenty, it's a system you have to manage on top of the system you're trying to build. Write descriptions well enough that the model picks the right skill from the goal, not the phrasing.
+    </p>
+
+    <h3>Claude and Clay are not interchangeable.</h3>
+    <p>
+      Claude does reasoning and generation. Clay does enrichment and data at scale. The interesting question is where they hand off. <strong>Clay for breadth, Claude for depth, clean handoff between them so neither tool is doing work it wasn't built for.</strong> That principle shapes every build I'm running now.
+    </p>
+
+    <hr>
+
+    <h2>Build a Library Only You Could Have Built</h2>
+    <p>
+      You see a lot of "download my setup" content online. Copy this skill, use this template. It misses the mark — unless uniformity is the goal.
+    </p>
+    <p>
+      Two people can share a skill and still be completely different operators. What makes yours yours is the way the skills are ordered, what they feed into, what context lives underneath them, what's been refined over months of your work. <strong>Borrow ideas. Build something that's yours.</strong> The only thing that makes a library powerful is everything it knows about the person who built it.
+    </p>
+
+    <div class="pullquote">
+      The world doesn't benefit from everyone running the same monolithic setup downloaded from the same post. It benefits from people building their own libraries.
+    </div>
+  </div>
+</article>
+
+<div class="closing-section">
+  <div class="container fade-up">
+    <h2>More writing<br><em>or want to talk shop?</em></h2>
+    <p>
+      The thinking here was sharpened in real-time by a learning group of GTM engineers. Always game to talk skills, architecture, or where Claude and Clay meet.
+    </p>
+    <a href="mailto:a6enn95@gmail.com" class="btn-primary">Get in Touch</a>
+    <a href="index.html#writing" class="btn-outline">More Writing</a>
+  </div>
+</div>
+
+<footer>
+  <span>© 2026 Adam Genn</span>
+  <span>Built with Claude. Because that's the point.</span>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
