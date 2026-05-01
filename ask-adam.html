@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ask Adam — Adam Genn</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #f5f2eb;
+      --bg2:       #ffffff;
+      --bg3:       #ede9df;
+      --border:    rgba(21,21,21,0.1);
+      --border2:   rgba(21,21,21,0.06);
+      --green:     #135b45;
+      --green-mid: #1a7a5e;
+      --green-lt:  #19a26c;
+      --text:      #151515;
+      --muted:     #737373;
+      --card-bg:   #ffffff;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', system-ui, sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    h1, h2, h3 { font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; letter-spacing: -0.01em; }
+    a { color: inherit; text-decoration: none; }
+    .serif { font-family: 'Instrument Serif', Georgia, serif; }
+    .green  { color: var(--green); }
+    .muted  { color: var(--muted); }
+
+    /* Nav */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: 60px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 3rem;
+      background: rgba(245,242,235,0.9);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border2);
+    }
+
+    .nav-logo {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 1.2rem;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+
+    .nav-links {
+      display: flex; gap: 2.5rem; list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--muted);
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    .nav-back {
+      padding: 0.45rem 1.2rem;
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .nav-back:hover { color: var(--text); border-color: var(--border); background: var(--bg3); }
+
+    /* Main layout */
+    main {
+      flex: 1;
+      padding-top: 60px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+
+    .page-header {
+      width: 100%;
+      max-width: 640px;
+      padding: 3rem 1.5rem 1.5rem;
+      text-align: center;
+    }
+
+    .page-header h1 {
+      font-size: 2.4rem;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+
+    .page-header p {
+      font-size: 0.95rem;
+      color: var(--muted);
+      max-width: 420px;
+      margin: 0 auto;
+    }
+
+    /* Chat container */
+    .chat-wrap {
+      width: 100%;
+      max-width: 640px;
+      padding: 0 1.5rem 4rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    /* Messages */
+    .messages {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      min-height: 180px;
+    }
+
+    .msg {
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+      animation: popIn 0.25s ease;
+    }
+
+    @keyframes popIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .msg.user { flex-direction: row-reverse; }
+
+    .msg-av {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: var(--bg3);
+      border: 1px solid var(--border2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      flex-shrink: 0;
+      letter-spacing: 0.02em;
+    }
+
+    .msg-av.adam-av {
+      background: #e6f0ec;
+      color: var(--green);
+      border-color: rgba(19,91,69,0.12);
+    }
+
+    .bubble {
+      padding: 11px 15px;
+      border-radius: 16px;
+      font-size: 0.88rem;
+      line-height: 1.7;
+      max-width: 480px;
+      white-space: pre-line;
+    }
+
+    .bubble.adam {
+      background: var(--bg2);
+      color: var(--text);
+      border: 1px solid var(--border2);
+      border-radius: 16px 16px 16px 4px;
+    }
+
+    .bubble.user {
+      background: var(--green);
+      color: #fff;
+      border-radius: 16px 16px 4px 16px;
+    }
+
+    /* Typing indicator */
+    .typing-wrap {
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+    }
+
+    .typing-dots {
+      background: var(--bg2);
+      border: 1px solid var(--border2);
+      border-radius: 16px 16px 16px 4px;
+      padding: 13px 16px;
+      display: flex;
+      gap: 4px;
+      align-items: center;
+    }
+
+    .td {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--muted);
+      animation: tdBounce 1.2s infinite;
+    }
+    .td:nth-child(2) { animation-delay: 0.2s; }
+    .td:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes tdBounce {
+      0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+      30% { transform: translateY(-5px); opacity: 1; }
+    }
+
+    /* Seed chips */
+    .seeds-section {
+      margin-top: 0.25rem;
+    }
+
+    .seeds-label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .seeds {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .seed {
+      font-size: 0.8rem;
+      padding: 6px 13px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-family: 'Inter', system-ui, sans-serif;
+      transition: all 0.15s;
+    }
+
+    .seed:hover {
+      background: var(--bg2);
+      color: var(--text);
+      border-color: rgba(19,91,69,0.2);
+    }
+
+    /* Input area */
+    .input-area {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 12px 12px 16px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+      transition: border-color 0.2s;
+    }
+
+    .input-area:focus-within {
+      border-color: rgba(19,91,69,0.3);
+    }
+
+    .chat-textarea {
+      flex: 1;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 0.88rem;
+      color: var(--text);
+      line-height: 1.5;
+      resize: none;
+      max-height: 120px;
+    }
+
+    .chat-textarea::placeholder { color: var(--muted); }
+
+    .send-btn {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: var(--green);
+      border: none;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      transition: background 0.15s, transform 0.1s;
+    }
+
+    .send-btn:hover { background: var(--green-mid); }
+    .send-btn:active { transform: scale(0.95); }
+
+    .send-btn svg {
+      width: 14px; height: 14px;
+      fill: none;
+      stroke: #fff;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* Demo note */
+    .demo-note {
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--muted);
+      padding-top: 0.5rem;
+    }
+
+    /* Footer */
+    footer {
+      padding: 2rem 3rem;
+      border-top: 1px solid var(--border2);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    footer a:hover { color: var(--text); }
+
+    @media (max-width: 640px) {
+      nav { padding: 0 1.25rem; }
+      .nav-links { display: none; }
+      .page-header { padding: 2rem 1.25rem 1rem; }
+      .page-header h1 { font-size: 1.9rem; }
+      .chat-wrap { padding: 0 1.25rem 3rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a class="nav-logo" href="index.html">Adam Genn</a>
+    <ul class="nav-links">
+      <li><a href="index.html#projects">Work</a></li>
+      <li><a href="index.html#writing">Writing</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+    </ul>
+    <a class="nav-back" href="index.html">← Back</a>
+  </nav>
+
+  <main>
+    <div class="page-header">
+      <h1>Ask <span class="green">Adam</span></h1>
+      <p>Ask me anything — what I do, how I think, what I'm building toward. This is a demo version. Real answers, pre-written for now.</p>
+    </div>
+
+    <div class="chat-wrap">
+      <div class="messages" id="messages">
+        <div class="msg">
+          <div class="msg-av adam-av">AG</div>
+          <div class="bubble adam">Hey. Ask me anything — what I do, how I think, what I'm building. I'll give you a straight answer.</div>
+        </div>
+      </div>
+
+      <div class="seeds-section" id="seeds-section">
+        <div class="seeds-label">Try asking:</div>
+        <div class="seeds" id="seeds">
+          <button class="seed" onclick="sendSeed(this)">What do you actually do?</button>
+          <button class="seed" onclick="sendSeed(this)">What's your background?</button>
+          <button class="seed" onclick="sendSeed(this)">What are you building?</button>
+          <button class="seed" onclick="sendSeed(this)">What makes you different?</button>
+          <button class="seed" onclick="sendSeed(this)">How do you think about sales?</button>
+          <button class="seed" onclick="sendSeed(this)">What are you looking for?</button>
+        </div>
+      </div>
+
+      <div class="input-area">
+        <textarea class="chat-textarea" id="chat-input" rows="1" placeholder="Ask anything..." onkeydown="handleKey(event)"></textarea>
+        <button class="send-btn" onclick="sendMessage()">
+          <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+
+      <div class="demo-note">Demo version — AI-powered version coming soon.</div>
+    </div>
+  </main>
+
+  <footer>
+    <span>Adam Genn</span>
+    <span>Built with Claude. Because that's the point.</span>
+  </footer>
+
+  <script>
+    const QA = [
+      {
+        keys: ['do', 'work', 'job', 'role', 'actually', 'day', 'time'],
+        answer: `I'm a GTM engineer. I build the system that finds the right companies, scores them by fit and timing, and generates the outreach — then I run the calls myself.\n\nMost GTM is split between people who build the process and people who execute it. I don't see those as separate jobs. The system tells you who to call. You still have to be worth talking to when you do.\n\nRight now I'm doing that at a company in the financial services space. The craft is the same regardless of where I'm applying it.`
+      },
+      {
+        keys: ['background', 'career', 'history', 'experience', 'deloitte', 'capco', 'cognizant', 'consulting', 'start', 'come from'],
+        answer: `Started in consulting — Deloitte, then Capco. That's where I learned to think in systems and find the layer that's missing from a process.\n\nMoved into solutions engineering. Closer to the customer, more technical, still not quite at the front.\n\nThe move I made after that put both things together: building the GTM motion from scratch, staying close to the deal. That's the arc I've been on — each step closer to the frontier, less back-office, more front line.\n\nI grew up in New York and stayed. The city shapes how you move.`
+      },
+      {
+        keys: ['building', 'build', 'working on', 'project', 'alpha', 'forge', 'portfolio', 'public'],
+        answer: `A few things running in parallel.\n\nThe day job is figuring out how to sell into financial services with a technical product and a short team. That's a genuine systems problem and I work on it like one.\n\nOn the side, I've been going through a GTM engineering program — Alpha Forge — and publishing the work as I go. The goal is to have a public record of how I think, not just claims about it. The portfolio you're looking at is part of that.\n\nThe longer bet: GTM engineering is a discipline that doesn't have a real playbook yet. I'm trying to write part of it.`
+      },
+      {
+        keys: ['different', 'unique', 'stand out', 'better', 'special', 'why you', 'edge'],
+        answer: `Most salespeople can run a process. Fewer can build one.\n\nI came up through consulting and SE before moving into sales. That means I can do technical discovery, design a POC, and close the deal — without handing off between people.\n\nThe GTM engineering layer is what most AEs don't have. I build the system that finds the deal before I run the call. That's a different profile than someone working a list someone else built.\n\nThe honest version: I'm not the most experienced closer in any room. But I'm probably the only person in the room who built the room.`
+      },
+      {
+        keys: ['sales', 'sell', 'selling', 'think about', 'approach', 'philosophy', 'how'],
+        answer: `I think about it like a systems problem.\n\nThe questions that matter: who is the right company, at the right moment, for the right reason? Most outbound fails because it treats those three as the same question. They're not.\n\nFit is table stakes. Timing is the variable that actually determines whether the call goes anywhere. A company with the right problem in the wrong moment is not a lead — it's a future lead. Knowing the difference is the skill.\n\nThe system I build is designed to surface the right company at the right moment. Everything after that is execution.`
+      },
+      {
+        keys: ['looking', 'next', 'want', 'hire', 'job', 'opportunity', 'open', 'move', 'switch'],
+        answer: `I'm paying attention, not searching.\n\nWhat I'd move for: an early-stage company where the GTM motion isn't figured out yet, where the first hire needs to build the system and run the calls — not manage a team that does it.\n\nThe companies I follow: ones building GTM infrastructure, AI-native sales tools, or anything at the intersection of finance and revenue systems. That's where the interesting problems are right now.\n\nHard no on anything that's purely back-office ops. I want to stay close to the customer.`
+      },
+      {
+        keys: ['finance', 'financial', 'pe', 'private equity', 'vc', 'investing', 'market', 'deal'],
+        answer: `Running interest, not just a vertical I cover.\n\nI spent time mapping how private equity firms source deals and realized they're running an outbound motion — they just call it deal sourcing instead of sales. Same machine: build a target list, score by fit, reach the right person before the process starts.\n\nThe data infrastructure for private markets is locked behind Bloomberg and PitchBook. But because private funds are regulated, there's a public record — SEC filings, Form D data — that's free and unauthenticated. That's where a GTM engineer finds the edge.\n\nFinance people think like systems designers. That's a room I'm comfortable in.`
+      },
+      {
+        keys: ['ai', 'artificial intelligence', 'machine learning', 'claude', 'gpt', 'llm', 'tools'],
+        answer: `I use AI as a force multiplier, not a replacement.\n\nThe clearest example: a formula-based personalization engine that generates 63 email variants from three inputs — segment, sector, title — without touching a language model once. When you use AI to generate every line, you can't defend any of them. When you use formulas, every word is yours.\n\nThat's the line I hold. AI accelerates the reversible decisions — layout, structure, research. You own the copy layer. If you can't read a paragraph and know in three seconds whether it's yours, you've handed off the wrong thing.\n\nThis site was built with Claude. That's not a footnote — it's the thesis.`
+      },
+      {
+        keys: ['contact', 'reach', 'email', 'connect', 'linkedin', 'talk', 'find you'],
+        answer: `LinkedIn is the right place — I'm active there and I actually reply.\n\nIf you have something specific in mind, say so in the message. "Let's connect" gets deprioritized. "I'm building X and think your background is relevant" gets a response.\n\nGeneric outreach is worse than no outreach. That's true for me too.`
+      },
+      {
+        keys: ['new york', 'nyc', 'city', 'location', 'where', 'live'],
+        answer: `New York, born and raised. It shapes how you work — there's a pace and a directness here that I'd miss anywhere else.\n\nFor what I do, being in the same city as the buyers still matters. Financial services is concentrated in a way that makes in-person possible when it counts.`
+      },
+      {
+        keys: ['clay', 'gtm engineering', 'tool', 'stack', 'software', 'tech'],
+        answer: `Clay is the core of the GTM engineering stack I've been building. It's the layer where research, enrichment, and personalization come together at scale.\n\nBut the tool is less interesting than the system design. Most people use Clay to add columns to a list. The interesting question is: what information do you actually need before you send, and where does it live when commercial data providers don't have it?\n\nFor private markets, that answer is SEC filings. For fintech, it's hiring velocity. For enterprise, it's tech stack and org structure. The tool is the same. The architecture is different every time.`
+      },
+    ];
+
+    function findAnswer(q) {
+      const lower = q.toLowerCase();
+      let best = null, bestScore = 0;
+      for (const qa of QA) {
+        const score = qa.keys.filter(k => lower.includes(k)).length;
+        if (score > bestScore) { bestScore = score; best = qa; }
+      }
+      if (best && bestScore > 0) return best.answer;
+      return `That's a good one. I don't have a scripted answer for it — which probably means it's worth a real conversation.\n\nFind me on LinkedIn and ask it there. I'll give you an actual answer.`;
+    }
+
+    function addMsg(text, side) {
+      const messages = document.getElementById('messages');
+      const div = document.createElement('div');
+      div.className = 'msg' + (side === 'user' ? ' user' : '');
+      const av = document.createElement('div');
+      av.className = 'msg-av' + (side === 'user' ? '' : ' adam-av');
+      av.textContent = side === 'user' ? 'You' : 'AG';
+      const bub = document.createElement('div');
+      bub.className = 'bubble ' + (side === 'user' ? 'user' : 'adam');
+      bub.textContent = text;
+      if (side === 'user') { div.appendChild(bub); div.appendChild(av); }
+      else { div.appendChild(av); div.appendChild(bub); }
+      messages.appendChild(div);
+      messages.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    }
+
+    function showTyping() {
+      const messages = document.getElementById('messages');
+      const div = document.createElement('div');
+      div.className = 'typing-wrap'; div.id = 'typing';
+      const av = document.createElement('div');
+      av.className = 'msg-av adam-av'; av.textContent = 'AG';
+      const dots = document.createElement('div');
+      dots.className = 'typing-dots';
+      dots.innerHTML = '<div class="td"></div><div class="td"></div><div class="td"></div>';
+      div.appendChild(av); div.appendChild(dots);
+      messages.appendChild(div);
+      div.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    }
+
+    function removeTyping() {
+      const t = document.getElementById('typing');
+      if (t) t.remove();
+    }
+
+    function sendMessage() {
+      const input = document.getElementById('chat-input');
+      const q = input.value.trim();
+      if (!q) return;
+      input.value = '';
+      input.style.height = 'auto';
+      addMsg(q, 'user');
+      const seedsSection = document.getElementById('seeds-section');
+      if (seedsSection) seedsSection.style.display = 'none';
+      showTyping();
+      const delay = 700 + Math.random() * 700;
+      setTimeout(() => {
+        removeTyping();
+        addMsg(findAnswer(q), 'adam');
+      }, delay);
+    }
+
+    function sendSeed(btn) {
+      document.getElementById('chat-input').value = btn.textContent;
+      sendMessage();
+    }
+
+    function handleKey(e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    }
+
+    document.getElementById('chat-input').addEventListener('input', function() {
+      this.style.height = 'auto';
+      this.style.height = this.scrollHeight + 'px';
+    });
+  </script>
+</body>
+</html>
